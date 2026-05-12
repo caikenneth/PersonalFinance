@@ -26,17 +26,20 @@
       --danger: #a85656;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-base: #0f0f0f;
-        --bg-elevated: #1a1a1a;
-        --bg-hover: #242424;
-        --bg-input: #161616;
-        --text-primary: #f0f0f0;
-        --text-secondary: #a8a8a8;
-        --text-tertiary: #707070;
-        --border: #2a2a2a;
-      }
+    html[data-theme="dark"],
+    html[data-theme="dark"] * {
+      color-scheme: dark;
+    }
+
+    html[data-theme="dark"] {
+      --bg-base: #0f0f0f;
+      --bg-elevated: #1a1a1a;
+      --bg-hover: #242424;
+      --bg-input: #161616;
+      --text-primary: #f0f0f0;
+      --text-secondary: #a8a8a8;
+      --text-tertiary: #707070;
+      --border: #2a2a2a;
     }
 
     * {
@@ -56,6 +59,7 @@
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     #root {
@@ -569,22 +573,10 @@
       margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px solid var(--border);
-      animation: slideDown 0.3s ease-out;
     }
 
     .category-body.visible {
       display: block;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .subcategory-item {
@@ -594,6 +586,20 @@
       border-radius: 6px;
       border: 1px solid var(--border);
       transition: all 0.2s ease;
+      animation: slideInItem 0.3s ease-out;
+    }
+
+    @keyframes slideInItem {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+      }
     }
 
     .subcategory-item:hover {
@@ -748,6 +754,7 @@
     class FinancialDashboard {
       constructor() {
         this.activeTab = 'paycheck';
+        this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
         this.paystubs = [];
         this.spendingCategories = {
           housing: { items: [] },
@@ -789,8 +796,17 @@
       }
 
       init() {
+        this.applyTheme();
         this.render();
         this.attachEventListeners();
+      }
+
+      applyTheme() {
+        if (this.darkMode) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
       }
 
       formatCurrency(value) {
@@ -803,13 +819,11 @@
       }
 
       toggleMode() {
-        const html = document.documentElement;
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          html.style.colorScheme = 'light';
-          localStorage.setItem('theme', 'light');
-        } else {
-          html.style.colorScheme = 'dark';
-          localStorage.setItem('theme', 'dark');
+        this.darkMode = !this.darkMode;
+        this.applyTheme();
+        const modeToggle = document.querySelector('.mode-toggle');
+        if (modeToggle) {
+          modeToggle.textContent = this.darkMode ? '☀️' : '🌙';
         }
       }
 
@@ -840,26 +854,45 @@
           fileInput.addEventListener('change', (e) => this.handleImageCapture(e));
         }
 
+        this.attachAddButtons();
+        this.attachRemoveButtons();
+        this.attachInputListeners();
+      }
+
+      attachAddButtons() {
         const addBtns = document.querySelectorAll('.add-btn');
         addBtns.forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const categoryKey = e.target.getAttribute('data-category');
+          btn.removeEventListener('click', btn.clickHandler);
+          btn.clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const categoryKey = e.currentTarget.getAttribute('data-category');
             this.addSubcategoryItem(categoryKey);
-          });
+          };
+          btn.addEventListener('click', btn.clickHandler);
         });
+      }
 
+      attachRemoveButtons() {
         const removeBtns = document.querySelectorAll('.remove-btn');
         removeBtns.forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const categoryKey = e.target.getAttribute('data-category');
-            const itemIndex = parseInt(e.target.getAttribute('data-item-index'));
+          btn.removeEventListener('click', btn.clickHandler);
+          btn.clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const categoryKey = e.currentTarget.getAttribute('data-category');
+            const itemIndex = parseInt(e.currentTarget.getAttribute('data-item-index'));
             this.removeSubcategoryItem(categoryKey, itemIndex);
-          });
+          };
+          btn.addEventListener('click', btn.clickHandler);
         });
+      }
 
+      attachInputListeners() {
         const inputs = document.querySelectorAll('[data-input-type]');
         inputs.forEach(input => {
-          input.addEventListener('change', (e) => {
+          input.removeEventListener('change', input.changeHandler);
+          input.changeHandler = (e) => {
             const categoryKey = e.target.getAttribute('data-category');
             const itemIndex = e.target.getAttribute('data-item-index') ? parseInt(e.target.getAttribute('data-item-index')) : 0;
             const field = e.target.getAttribute('data-field');
@@ -869,9 +902,116 @@
               this.spendingCategories[categoryKey].items[itemIndex] = { label: '', value: 0, frequency: 'monthly' };
             }
             this.spendingCategories[categoryKey].items[itemIndex][field] = value;
-            this.render();
-          });
+            
+            // Update category total only
+            const categoryElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
+            if (categoryElement) {
+              const total = this.spendingCategories[categoryKey].items.reduce((sum, item) => sum + (item.value || 0), 0);
+              categoryElement.textContent = this.formatCurrency(total);
+            }
+          };
+          input.addEventListener('change', input.changeHandler);
         });
+      }
+
+      addSubcategoryItem(categoryKey) {
+        const category = this.spendingCategories[categoryKey];
+        const itemIndex = category.items.length;
+        
+        category.items.push({
+          label: '',
+          value: 0,
+          frequency: 'monthly',
+        });
+
+        // Find the category body
+        const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
+        if (!categoryElement) return;
+
+        const categoryBody = categoryElement.querySelector('.category-body');
+        if (!categoryBody) return;
+
+        // Make sure body is visible
+        if (!categoryBody.classList.contains('visible')) {
+          categoryBody.classList.add('visible');
+        }
+
+        // Create new item HTML
+        const placeholder = this.categoryPlaceholders[categoryKey];
+        const itemHTML = `
+          <div class="subcategory-item">
+            <div class="subcategory-row">
+              <input type="text" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="label" value="" placeholder="${placeholder}">
+              <input type="number" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="value" value="0" step="0.01" placeholder="0.00">
+              <select class="frequency-select" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="frequency">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-weekly</option>
+                <option value="monthly" selected>Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+              <button class="remove-btn" data-category="${categoryKey}" data-item-index="${itemIndex}" title="Remove">×</button>
+            </div>
+          </div>
+        `;
+
+        // Insert before the simple input wrapper or after last item
+        const simpleWrapper = categoryBody.querySelector('.simple-input-wrapper');
+        const lastItem = categoryBody.querySelector('.subcategory-item:last-child');
+        
+        if (simpleWrapper) {
+          simpleWrapper.remove();
+        }
+
+        categoryBody.insertAdjacentHTML('beforeend', itemHTML);
+
+        // Reattach event listeners to new elements
+        this.attachRemoveButtons();
+        this.attachInputListeners();
+
+        // Focus the new input
+        const newInput = categoryBody.querySelector(`[data-item-index="${itemIndex}"]`);
+        if (newInput) {
+          setTimeout(() => newInput.focus(), 50);
+        }
+      }
+
+      removeSubcategoryItem(categoryKey, itemIndex) {
+        const category = this.spendingCategories[categoryKey];
+        category.items.splice(itemIndex, 1);
+
+        // Find and remove the item from DOM
+        const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
+        if (!categoryElement) return;
+
+        const itemElement = categoryElement.querySelector(`[data-item-index="${itemIndex}"]`).closest('.subcategory-item');
+        if (itemElement) {
+          itemElement.style.animation = 'slideInItem 0.3s ease-out reverse';
+          setTimeout(() => itemElement.remove(), 300);
+        }
+
+        // Update indices of remaining items
+        const categoryBody = categoryElement.querySelector('.category-body');
+        if (categoryBody) {
+          const items = categoryBody.querySelectorAll('.subcategory-item');
+          items.forEach((item, idx) => {
+            const inputs = item.querySelectorAll('[data-input-type="sub"]');
+            inputs.forEach(input => {
+              input.setAttribute('data-item-index', idx);
+            });
+            const removeBtn = item.querySelector('.remove-btn');
+            if (removeBtn) removeBtn.setAttribute('data-item-index', idx);
+          });
+        }
+
+        // Update category total
+        const categoryElement2 = document.querySelector(`[data-category-total="${categoryKey}"]`);
+        if (categoryElement2) {
+          const total = category.items.reduce((sum, item) => sum + (item.value || 0), 0);
+          categoryElement2.textContent = this.formatCurrency(total);
+        }
+
+        this.attachRemoveButtons();
       }
 
       handleImageCapture(event) {
@@ -950,20 +1090,6 @@
         reader.readAsDataURL(file);
       }
 
-      addSubcategoryItem(categoryKey) {
-        this.spendingCategories[categoryKey].items.push({
-          label: '',
-          value: 0,
-          frequency: 'monthly',
-        });
-        this.render();
-      }
-
-      removeSubcategoryItem(categoryKey, itemIndex) {
-        this.spendingCategories[categoryKey].items.splice(itemIndex, 1);
-        this.render();
-      }
-
       getPaycheckTotals() {
         const totals = {
           grossPay: 0,
@@ -1030,7 +1156,7 @@
                 <p>Track your income and spending</p>
               </div>
               <button class="mode-toggle" title="Toggle light/dark mode">
-                ${window.matchMedia('(prefers-color-scheme: dark)').matches ? '☀️' : '🌙'}
+                ${this.darkMode ? '☀️' : '🌙'}
               </button>
             </div>
 
@@ -1323,12 +1449,12 @@
         const hasItems = category.items.length > 0;
         const categoryTotal = category.items.reduce((sum, item) => sum + (item.value || 0), 0);
 
-        let html = `<div class="spending-category">`;
+        let html = `<div class="spending-category" data-category-key="${categoryKey}">`;
 
         html += `
           <div class="category-header">
             <span class="category-name">${categoryLabel}</span>
-            <span class="category-total">${this.formatCurrency(categoryTotal)}</span>
+            <span class="category-total" data-category-total="${categoryKey}">${this.formatCurrency(categoryTotal)}</span>
             <button class="add-btn" data-category="${categoryKey}" title="Add item">+</button>
           </div>
         `;
