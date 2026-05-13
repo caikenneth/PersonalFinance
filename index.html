@@ -2,44 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Earnings & Spending</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #4a6741;
-      --primary-light: #6b9066;
-      --primary-dark: #2d4220;
-      --accent: #d4a373;
-      --accent-light: #e8c5a0;
-      --accent-dark: #8b6f47;
-      --bg-base: #faf9f7;
-      --bg-elevated: #ffffff;
-      --bg-hover: #f0ebe5;
-      --bg-input: #f5f1ed;
-      --text-primary: #2c2c2c;
-      --text-secondary: #7a7a7a;
-      --text-tertiary: #a8a8a8;
-      --border: #e8e3dd;
+      --primary: #6b8e66;
+      --primary-light: #8fa686;
+      --primary-dark: #4d6250;
+      --accent: #c9a878;
+      --accent-light: #ddb89d;
+      --accent-dark: #a87d52;
+      --bg-base: #e8dcc8;
+      --bg-elevated: #f4ede4;
+      --bg-hover: #ede5d8;
+      --bg-input: #e5dcd0;
+      --text-primary: #3a3a3a;
+      --text-secondary: #6d6d6d;
+      --text-tertiary: #9a9a9a;
+      --border: #d9cebd;
       --success: #5a9e5e;
       --warning: #c89852;
       --danger: #a85656;
-    }
-
-    html[data-theme="dark"],
-    html[data-theme="dark"] * {
-      color-scheme: dark;
+      --shadow: rgba(58, 58, 58, 0.08);
     }
 
     html[data-theme="dark"] {
-      --bg-base: #0f0f0f;
-      --bg-elevated: #1a1a1a;
-      --bg-hover: #242424;
-      --bg-input: #161616;
-      --text-primary: #f0f0f0;
-      --text-secondary: #a8a8a8;
-      --text-tertiary: #707070;
-      --border: #2a2a2a;
+      --bg-base: #2a2620;
+      --bg-elevated: #3a3530;
+      --bg-hover: #423d37;
+      --bg-input: #363230;
+      --text-primary: #f0ebe4;
+      --text-secondary: #b8aea0;
+      --text-tertiary: #88807a;
+      --border: #4a4539;
     }
 
     * {
@@ -51,6 +47,9 @@
     html, body {
       width: 100%;
       height: 100%;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -68,9 +67,12 @@
       flex-direction: column;
     }
 
-    input, button, select {
+    input, button, select, textarea {
       transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
       font-family: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
 
     input[type="number"]::-webkit-outer-spin-button,
@@ -82,11 +84,15 @@
       -moz-appearance: textfield;
     }
 
+    button {
+      -webkit-user-select: none;
+    }
+
     .container {
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -96,7 +102,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       animation: slideDown 0.6s ease-out;
     }
 
@@ -112,7 +118,7 @@
     }
 
     .header-content h1 {
-      font-size: 2rem;
+      font-size: 1.75rem;
       font-weight: 600;
       margin-bottom: 0.25rem;
       letter-spacing: -0.01em;
@@ -120,7 +126,7 @@
     }
 
     .header-content p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       font-weight: 400;
     }
@@ -139,6 +145,9 @@
       height: 40px;
       transition: all 0.3s ease;
       color: var(--text-secondary);
+      outline: none;
+      min-width: 44px;
+      min-height: 44px;
     }
 
     .mode-toggle:hover {
@@ -147,25 +156,38 @@
       background: var(--bg-hover);
     }
 
+    .mode-toggle:focus {
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.2);
+      border-color: var(--primary);
+    }
+
     .tab-nav {
       display: flex;
       gap: 0;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
 
     .tab-btn {
-      padding: 1rem 0;
+      padding: 1rem 0.75rem;
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
       position: relative;
       transition: color 0.3s ease;
-      margin-right: 2rem;
+      margin-right: 1.5rem;
+      outline: none;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab-btn:focus {
+      box-shadow: inset 0 -2px 0 var(--primary);
     }
 
     .tab-btn.active {
@@ -203,9 +225,10 @@
     .card {
       background: var(--bg-elevated);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.75rem;
-      margin-bottom: 2rem;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px var(--shadow);
       animation: slideUp 0.5s ease-out;
     }
 
@@ -221,47 +244,49 @@
     }
 
     .card-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 500;
       color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       opacity: 0.7;
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
     }
 
     .stat-card {
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 10px;
       padding: 1rem;
       text-align: center;
       position: relative;
       overflow: hidden;
       transition: all 0.2s ease;
+      box-shadow: 0 1px 4px var(--shadow);
     }
 
     .stat-card:hover {
       border-color: var(--primary);
+      box-shadow: 0 2px 6px var(--shadow);
     }
 
     .stat-value {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 600;
       color: var(--primary);
-      font-family: 'Space Mono', monospace;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
+      font-family: 'Roboto', sans-serif;
     }
 
     .stat-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-tertiary);
       font-weight: 500;
       text-transform: uppercase;
@@ -270,15 +295,20 @@
 
     .upload-zone {
       border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 2.5rem 1.5rem;
+      border-radius: 12px;
+      padding: 2rem 1rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       position: relative;
       overflow: hidden;
       background: var(--bg-input);
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .upload-zone:hover {
@@ -288,7 +318,7 @@
 
     .upload-icon {
       font-size: 2rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.6rem;
       opacity: 0.6;
       transition: all 0.3s ease;
     }
@@ -299,14 +329,14 @@
     }
 
     .upload-text {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.2rem;
       color: var(--text-primary);
     }
 
     .upload-subtext {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-tertiary);
     }
 
@@ -316,54 +346,19 @@
 
     .preview-img {
       max-width: 100%;
-      max-height: 250px;
-      border-radius: 6px;
+      max-height: 200px;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       animation: fadeIn 0.4s ease;
-    }
-
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin: 1.75rem 0 1rem 0;
-      opacity: 0.7;
-    }
-
-    .paycheck-item {
-      background: var(--bg-input);
-      border-left: 2px solid var(--primary);
-      padding: 0.9rem 0 0.9rem 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-    }
-
-    .paycheck-item-header {
-      font-weight: 500;
-      font-size: 0.75rem;
-      margin-bottom: 0.4rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      opacity: 0.6;
-    }
-
-    .paycheck-item-value {
-      color: var(--text-primary);
-      font-family: 'Space Mono', monospace;
-      font-weight: 500;
-      font-size: 0.9rem;
+      box-shadow: 0 2px 8px var(--shadow);
     }
 
     .line-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.85rem 0;
+      padding: 0.75rem 0;
       border-bottom: 1px solid var(--border);
       transition: all 0.2s ease;
     }
@@ -374,53 +369,54 @@
 
     .line-item:hover {
       background: var(--bg-hover);
-      padding: 0.85rem 0.5rem;
+      padding: 0.75rem 0.5rem;
       margin: 0 -0.5rem;
       border-radius: 4px;
     }
 
     .line-item-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       font-weight: 450;
+      flex: 1;
     }
 
     .line-item-amount {
       font-size: 0.9rem;
       font-weight: 500;
       color: var(--text-primary);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Roboto', sans-serif;
       text-align: right;
-      min-width: 90px;
+      min-width: 80px;
     }
 
     .subtotal {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 0;
-      margin-top: 1rem;
+      padding: 0.9rem 0;
+      margin-top: 0.75rem;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       font-weight: 500;
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .subtotal-amount {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Roboto', sans-serif;
     }
 
     .budget-item {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .budget-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
-      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.8rem;
     }
 
     .budget-label {
@@ -431,7 +427,7 @@
     .budget-amount {
       font-weight: 600;
       color: var(--primary);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Roboto', sans-serif;
     }
 
     .budget-bar {
@@ -464,24 +460,24 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem 0;
-      margin-top: 1.5rem;
+      padding: 1rem 0;
+      margin-top: 1rem;
       border-top: 1px solid var(--border);
       font-weight: 500;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .total-label {
       color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .total-amount {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Roboto', sans-serif;
       color: var(--primary);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
@@ -495,56 +491,93 @@
 
     .empty-state {
       text-align: center;
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1rem;
       color: var(--text-secondary);
     }
 
     .empty-state-icon {
       font-size: 2.5rem;
       opacity: 0.3;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .empty-state-text {
-      font-size: 0.9rem;
-      line-height: 1.6;
+      font-size: 0.85rem;
+      line-height: 1.5;
     }
 
-    /* Spending category styles */
     .spending-category {
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
       background: var(--bg-elevated);
       transition: all 0.3s ease;
+      box-shadow: 0 1px 4px var(--shadow);
     }
 
     .spending-category:hover {
       border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(74, 103, 65, 0.08);
+      box-shadow: 0 2px 8px var(--shadow);
     }
 
     .category-header {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       margin-bottom: 0;
     }
 
     .category-name {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
       color: var(--text-primary);
       flex: 1;
     }
 
     .category-total {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--primary);
-      font-family: 'Space Mono', monospace;
       text-align: right;
+      cursor: help;
+      position: relative;
+      font-family: 'Roboto', sans-serif;
+      min-width: 70px;
+    }
+
+    .tooltip {
+      visibility: hidden;
+      background-color: var(--text-primary);
+      color: var(--bg-elevated);
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      right: 0;
+      white-space: nowrap;
+      font-size: 0.7rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+
+    .category-total:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 10px;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--text-primary) transparent transparent transparent;
     }
 
     .add-btn {
@@ -554,13 +587,16 @@
       cursor: pointer;
       font-size: 1.4rem;
       padding: 0;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
+      min-width: 44px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
       flex-shrink: 0;
+      outline: none;
     }
 
     .add-btn:hover {
@@ -568,10 +604,15 @@
       color: var(--primary-light);
     }
 
+    .add-btn:focus {
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.3);
+      border-radius: 4px;
+    }
+
     .category-body {
       display: none;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
       border-top: 1px solid var(--border);
     }
 
@@ -581,12 +622,13 @@
 
     .subcategory-item {
       background: var(--bg-input);
-      padding: 0.9rem;
-      margin-bottom: 0.6rem;
-      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
       border: 1px solid var(--border);
       transition: all 0.2s ease;
       animation: slideInItem 0.3s ease-out;
+      box-shadow: 0 1px 3px var(--shadow);
     }
 
     @keyframes slideInItem {
@@ -609,48 +651,50 @@
 
     .subcategory-row {
       display: grid;
-      grid-template-columns: 1fr 80px 110px 28px;
-      gap: 0.6rem;
+      grid-template-columns: 1fr 70px 90px 32px;
+      gap: 0.5rem;
       align-items: end;
     }
 
     .subcategory-input {
-      padding: 0.5rem 0.75rem;
+      padding: 0.5rem 0.6rem;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       background: var(--bg-elevated);
       color: var(--text-primary);
-      font-family: 'Space Mono', monospace;
       transition: all 0.2s ease;
+      outline: none;
+      min-height: 44px;
     }
 
     .subcategory-input:focus {
-      outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(74, 103, 65, 0.1);
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.1);
+      background: var(--bg-elevated);
     }
 
     .subcategory-input::placeholder {
       color: var(--text-tertiary);
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
     .frequency-select {
-      padding: 0.5rem 0.6rem;
+      padding: 0.5rem 0.4rem;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
       background: var(--bg-elevated);
       color: var(--text-primary);
       cursor: pointer;
       transition: all 0.2s ease;
+      outline: none;
+      min-height: 44px;
     }
 
     .frequency-select:focus {
-      outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(74, 103, 65, 0.1);
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.1);
     }
 
     .remove-btn {
@@ -660,13 +704,16 @@
       cursor: pointer;
       font-size: 1.2rem;
       padding: 0;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
+      min-width: 44px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
       flex-shrink: 0;
+      outline: none;
     }
 
     .remove-btn:hover {
@@ -674,28 +721,33 @@
       transform: scale(1.1);
     }
 
+    .remove-btn:focus {
+      box-shadow: 0 0 0 2px rgba(168, 86, 86, 0.3);
+      border-radius: 4px;
+    }
+
     .simple-input-wrapper {
       display: grid;
-      grid-template-columns: 1fr 80px 110px 28px;
-      gap: 0.6rem;
+      grid-template-columns: 1fr 70px 90px 32px;
+      gap: 0.5rem;
       align-items: end;
     }
 
     .simple-input-field {
-      padding: 0.5rem 0.75rem;
+      padding: 0.5rem 0.6rem;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       background: var(--bg-elevated);
       color: var(--text-primary);
-      font-family: 'Space Mono', monospace;
       transition: all 0.2s ease;
+      outline: none;
+      min-height: 44px;
     }
 
     .simple-input-field:focus {
-      outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(74, 103, 65, 0.1);
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.1);
     }
 
     .simple-input-field::placeholder {
@@ -703,27 +755,25 @@
       opacity: 0.6;
     }
 
+    .currency-input {
+      font-family: 'Roboto', sans-serif;
+    }
+
     @media (max-width: 640px) {
       .container {
-        padding: 1.5rem 1rem;
+        padding: 1rem 0.75rem;
       }
 
       .header {
-        flex-direction: column;
-        gap: 1rem;
+        margin-bottom: 1.5rem;
       }
 
       .header-content h1 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
       }
 
-      .summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-      }
-
-      .stat-card {
-        padding: 0.85rem;
+      .header-content p {
+        font-size: 0.8rem;
       }
 
       .stat-value {
@@ -732,17 +782,50 @@
 
       .card {
         padding: 1.25rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .tab-btn {
+        padding: 0.9rem 0.5rem;
+        font-size: 0.85rem;
+        margin-right: 1rem;
+      }
+
+      .tooltip {
+        right: auto;
+        left: 0;
+      }
+
+      .tooltip::after {
+        right: auto;
+        left: 10px;
       }
 
       .subcategory-row,
       .simple-input-wrapper {
-        grid-template-columns: 1fr 70px 100px 28px;
-        gap: 0.5rem;
+        grid-template-columns: 1fr 60px 80px 32px;
+        gap: 0.4rem;
       }
 
-      .tab-btn {
-        margin-right: 1.5rem;
-        font-size: 0.9rem;
+      .subcategory-input,
+      .simple-input-field,
+      .frequency-select {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.5rem;
+        min-height: 40px;
+      }
+
+      .upload-zone {
+        padding: 1.5rem 0.75rem;
+        min-height: 120px;
+      }
+
+      .upload-text {
+        font-size: 0.85rem;
+      }
+
+      .upload-subtext {
+        font-size: 0.7rem;
       }
     }
   </style>
@@ -792,6 +875,13 @@
           insurance: 'Auto, Health, Renters',
           other: 'Gym, Hobbies, Classes',
         };
+        this.frequencyMultipliers = {
+          daily: 30,
+          weekly: 4.286,
+          biweekly: 2.143,
+          monthly: 1,
+          yearly: 0.0833,
+        };
         this.init();
       }
 
@@ -816,6 +906,17 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }).format(value);
+      }
+
+      convertToMonthly(value, frequency) {
+        return value * (this.frequencyMultipliers[frequency] || 1);
+      }
+
+      getCategoryMonthlyTotal(categoryKey) {
+        const category = this.spendingCategories[categoryKey];
+        return category.items.reduce((total, item) => {
+          return total + this.convertToMonthly(item.value || 0, item.frequency || 'monthly');
+        }, 0);
       }
 
       toggleMode() {
@@ -867,7 +968,7 @@
             e.preventDefault();
             e.stopPropagation();
             const categoryKey = e.currentTarget.getAttribute('data-category');
-            this.addSubcategoryItem(categoryKey);
+            this.expandCategory(categoryKey);
           };
           btn.addEventListener('click', btn.clickHandler);
         });
@@ -892,32 +993,72 @@
         const inputs = document.querySelectorAll('[data-input-type]');
         inputs.forEach(input => {
           input.removeEventListener('change', input.changeHandler);
+          input.removeEventListener('focus', input.focusHandler);
+
+          input.focusHandler = (e) => {
+            if (e.target.value === '0' || e.target.value === '0.00') {
+              e.target.value = '';
+            }
+          };
+
           input.changeHandler = (e) => {
             const categoryKey = e.target.getAttribute('data-category');
             const itemIndex = e.target.getAttribute('data-item-index') ? parseInt(e.target.getAttribute('data-item-index')) : 0;
             const field = e.target.getAttribute('data-field');
-            const value = field === 'label' ? e.target.value : (field === 'frequency' ? e.target.value : Number(e.target.value) || 0);
-            
+            let value = e.target.value;
+
+            if (field !== 'label' && field !== 'frequency') {
+              value = Number(value) || 0;
+            }
+
             if (!this.spendingCategories[categoryKey].items[itemIndex]) {
               this.spendingCategories[categoryKey].items[itemIndex] = { label: '', value: 0, frequency: 'monthly' };
             }
             this.spendingCategories[categoryKey].items[itemIndex][field] = value;
-            
+
             // Update category total only
             const categoryElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
             if (categoryElement) {
-              const total = this.spendingCategories[categoryKey].items.reduce((sum, item) => sum + (item.value || 0), 0);
+              const total = this.getCategoryMonthlyTotal(categoryKey);
               categoryElement.textContent = this.formatCurrency(total);
             }
           };
+
+          input.addEventListener('focus', input.focusHandler);
           input.addEventListener('change', input.changeHandler);
         });
       }
 
-      addSubcategoryItem(categoryKey) {
+      expandCategory(categoryKey) {
         const category = this.spendingCategories[categoryKey];
-        const itemIndex = category.items.length;
-        
+        const hasSimpleInput = category.items.length === 0;
+
+        // If there's a simple input, convert it to a multi-item state
+        if (hasSimpleInput) {
+          // Get the current simple input values
+          const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
+          if (!categoryElement) return;
+
+          const simpleWrapper = categoryElement.querySelector('.simple-input-wrapper');
+          if (simpleWrapper) {
+            const labelInput = simpleWrapper.querySelector('[data-field="label"]');
+            const valueInput = simpleWrapper.querySelector('[data-field="value"]');
+            const frequencySelect = simpleWrapper.querySelector('[data-field="frequency"]');
+
+            const label = labelInput?.value || '';
+            const value = Number(valueInput?.value) || 0;
+            const frequency = frequencySelect?.value || 'monthly';
+
+            // Add the first item with the values from the simple input
+            category.items.push({
+              label: label,
+              value: value,
+              frequency: frequency,
+            });
+          }
+        }
+
+        // Add a second blank item
         category.items.push({
           label: '',
           value: 0,
@@ -936,43 +1077,42 @@
           categoryBody.classList.add('visible');
         }
 
-        // Create new item HTML
-        const placeholder = this.categoryPlaceholders[categoryKey];
-        const itemHTML = `
-          <div class="subcategory-item">
-            <div class="subcategory-row">
-              <input type="text" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="label" value="" placeholder="${placeholder}">
-              <input type="number" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="value" value="0" step="0.01" placeholder="0.00">
-              <select class="frequency-select" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="frequency">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Bi-weekly</option>
-                <option value="monthly" selected>Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-              <button class="remove-btn" data-category="${categoryKey}" data-item-index="${itemIndex}" title="Remove">×</button>
-            </div>
-          </div>
-        `;
-
-        // Insert before the simple input wrapper or after last item
+        // Remove simple wrapper if exists
         const simpleWrapper = categoryBody.querySelector('.simple-input-wrapper');
-        const lastItem = categoryBody.querySelector('.subcategory-item:last-child');
-        
         if (simpleWrapper) {
           simpleWrapper.remove();
         }
 
-        categoryBody.insertAdjacentHTML('beforeend', itemHTML);
+        // Render all items fresh in category body
+        categoryBody.innerHTML = '';
+        category.items.forEach((item, itemIndex) => {
+          const itemHTML = `
+            <div class="subcategory-item">
+              <div class="subcategory-row">
+                <input type="text" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="label" value="${item.label || ''}" placeholder="" aria-label="Description for ${this.categoryLabels[categoryKey]} item">
+                <input type="number" class="subcategory-input currency-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="value" value="${item.value > 0 ? item.value : '0.00'}" step="0.01" min="0" placeholder="0.00" aria-label="Amount for ${this.categoryLabels[categoryKey]} item">
+                <select class="frequency-select" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="frequency" aria-label="Frequency for ${this.categoryLabels[categoryKey]} item">
+                  <option value="daily" ${item.frequency === 'daily' ? 'selected' : ''}>Daily</option>
+                  <option value="weekly" ${item.frequency === 'weekly' ? 'selected' : ''}>Weekly</option>
+                  <option value="biweekly" ${item.frequency === 'biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                  <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
+                  <option value="yearly" ${item.frequency === 'yearly' ? 'selected' : ''}>Yearly</option>
+                </select>
+                <button class="remove-btn" data-category="${categoryKey}" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">×</button>
+              </div>
+            </div>
+          `;
+          categoryBody.insertAdjacentHTML('beforeend', itemHTML);
+        });
 
-        // Reattach event listeners to new elements
+        // Reattach event listeners
         this.attachRemoveButtons();
         this.attachInputListeners();
 
-        // Focus the new input
-        const newInput = categoryBody.querySelector(`[data-item-index="${itemIndex}"]`);
-        if (newInput) {
-          setTimeout(() => newInput.focus(), 50);
+        // Focus the second item's label input
+        const secondItemLabel = categoryBody.querySelector(`[data-item-index="1"][data-field="label"]`);
+        if (secondItemLabel) {
+          setTimeout(() => secondItemLabel.focus(), 50);
         }
       }
 
@@ -984,7 +1124,7 @@
         const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
         if (!categoryElement) return;
 
-        const itemElement = categoryElement.querySelector(`[data-item-index="${itemIndex}"]`).closest('.subcategory-item');
+        const itemElement = categoryElement.querySelector(`[data-item-index="${itemIndex}"]`)?.closest('.subcategory-item');
         if (itemElement) {
           itemElement.style.animation = 'slideInItem 0.3s ease-out reverse';
           setTimeout(() => itemElement.remove(), 300);
@@ -1005,10 +1145,10 @@
         }
 
         // Update category total
-        const categoryElement2 = document.querySelector(`[data-category-total="${categoryKey}"]`);
-        if (categoryElement2) {
-          const total = category.items.reduce((sum, item) => sum + (item.value || 0), 0);
-          categoryElement2.textContent = this.formatCurrency(total);
+        const categoryTotalElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
+        if (categoryTotalElement) {
+          const total = this.getCategoryMonthlyTotal(categoryKey);
+          categoryTotalElement.textContent = this.formatCurrency(total);
         }
 
         this.attachRemoveButtons();
@@ -1135,10 +1275,8 @@
 
       getSpendingTotals() {
         let totalSpending = 0;
-        Object.values(this.spendingCategories).forEach(category => {
-          category.items.forEach(item => {
-            totalSpending += item.value || 0;
-          });
+        Object.entries(this.spendingCategories).forEach(([categoryKey, category]) => {
+          totalSpending += this.getCategoryMonthlyTotal(categoryKey);
         });
         return totalSpending;
       }
@@ -1155,16 +1293,16 @@
                 <h1>Earnings & Spending</h1>
                 <p>Track your income and spending</p>
               </div>
-              <button class="mode-toggle" title="Toggle light/dark mode">
+              <button class="mode-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
                 ${this.darkMode ? '☀️' : '🌙'}
               </button>
             </div>
 
-            <div class="tab-nav">
-              <button class="tab-btn ${this.activeTab === 'paycheck' ? 'active' : ''}" data-tab="paycheck">
+            <div class="tab-nav" role="tablist">
+              <button class="tab-btn ${this.activeTab === 'paycheck' ? 'active' : ''}" data-tab="paycheck" role="tab" aria-selected="${this.activeTab === 'paycheck'}">
                 Paycheck
               </button>
-              <button class="tab-btn ${this.activeTab === 'spending' ? 'active' : ''}" data-tab="spending">
+              <button class="tab-btn ${this.activeTab === 'spending' ? 'active' : ''}" data-tab="spending" role="tab" aria-selected="${this.activeTab === 'spending'}">
                 Spending
               </button>
             </div>
@@ -1182,14 +1320,14 @@
       }
 
       renderPaycheckTab(paycheck) {
-        let html = `<div class="tab-content active">`;
+        let html = `<div class="tab-content active" role="tabpanel">`;
 
         html += `
-          <div class="upload-zone">
+          <div class="upload-zone" role="button" tabindex="0">
             <div class="upload-icon">📄</div>
             <div class="upload-text">Add a pay stub</div>
             <div class="upload-subtext">Photo or file • Auto-extracts data</div>
-            <input type="file" accept="image/*" capture="environment">
+            <input type="file" accept="image/*" capture="environment" aria-label="Upload pay stub image">
           </div>
         `;
 
@@ -1287,9 +1425,9 @@
               const value = stub.extractedData[field.key] || 0;
               if (value > 0) {
                 html += `
-                  <div class="paycheck-item">
-                    <div class="paycheck-item-header">Paycheck ${index + 1}</div>
-                    <div class="paycheck-item-value">${this.formatCurrency(value)}</div>
+                  <div class="paycheck-item" style="padding-left: 1rem; margin-left: 0; background: var(--bg-input); border-left: 2px solid var(--primary); padding: 0.6rem 0 0.6rem 0.8rem; margin: 0.3rem 0; border-radius: 4px; font-size: 0.8rem;">
+                    <div style="font-weight: 500; font-size: 0.7rem; margin-bottom: 0.2rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Paycheck ${index + 1}</div>
+                    <div style="color: var(--text-primary); font-family: 'Roboto', sans-serif; font-weight: 500; font-size: 0.8rem;">${this.formatCurrency(value)}</div>
                   </div>
                 `;
               }
@@ -1341,9 +1479,9 @@
               const value = stub.extractedData[field.key] || 0;
               if (value > 0) {
                 html += `
-                  <div class="paycheck-item">
-                    <div class="paycheck-item-header">Paycheck ${index + 1}</div>
-                    <div class="paycheck-item-value">${this.formatCurrency(value)}</div>
+                  <div class="paycheck-item" style="padding-left: 1rem; margin-left: 0; background: var(--bg-input); border-left: 2px solid var(--primary); padding: 0.6rem 0 0.6rem 0.8rem; margin: 0.3rem 0; border-radius: 4px; font-size: 0.8rem;">
+                    <div style="font-weight: 500; font-size: 0.7rem; margin-bottom: 0.2rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Paycheck ${index + 1}</div>
+                    <div style="color: var(--text-primary); font-family: 'Roboto', sans-serif; font-weight: 500; font-size: 0.8rem;">${this.formatCurrency(value)}</div>
                   </div>
                 `;
               }
@@ -1403,7 +1541,7 @@
         const totalSpending = this.getSpendingTotals();
         const disposable = paycheck.biMonthlyPaycheck - totalSpending;
 
-        let html = `<div class="tab-content active"><div class="card">`;
+        let html = `<div class="tab-content active" role="tabpanel"><div class="card">`;
 
         Object.entries(this.spendingCategories).forEach(([categoryKey, category]) => {
           if (categoryKey === 'other') return;
@@ -1417,9 +1555,9 @@
         if (paycheck.biMonthlyPaycheck > 0) {
           html += `
             <div class="card">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
-                <span style="font-size: 0.9rem; color: var(--text-secondary);">Total spending</span>
-                <span style="font-family: 'Space Mono', monospace; font-weight: 600; color: var(--text-primary);">${this.formatCurrency(totalSpending)}</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0;">
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Total spending</span>
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 600; color: var(--text-primary);">${this.formatCurrency(totalSpending)}</span>
               </div>
               <div class="total-row">
                 <span class="total-label">Disposable</span>
@@ -1447,15 +1585,18 @@
         const categoryLabel = this.categoryLabels[categoryKey];
         const placeholder = this.categoryPlaceholders[categoryKey];
         const hasItems = category.items.length > 0;
-        const categoryTotal = category.items.reduce((sum, item) => sum + (item.value || 0), 0);
+        const categoryTotal = this.getCategoryMonthlyTotal(categoryKey);
 
         let html = `<div class="spending-category" data-category-key="${categoryKey}">`;
 
         html += `
           <div class="category-header">
             <span class="category-name">${categoryLabel}</span>
-            <span class="category-total" data-category-total="${categoryKey}">${this.formatCurrency(categoryTotal)}</span>
-            <button class="add-btn" data-category="${categoryKey}" title="Add item">+</button>
+            <span class="category-total" data-category-total="${categoryKey}" role="tooltip">
+              ${this.formatCurrency(categoryTotal)}
+              <div class="tooltip">Monthly total (from mixed frequencies)</div>
+            </span>
+            <button class="add-btn" data-category="${categoryKey}" title="Add item" aria-label="Add ${categoryLabel} item">+</button>
           </div>
         `;
 
@@ -1466,16 +1607,16 @@
             html += `
               <div class="subcategory-item">
                 <div class="subcategory-row">
-                  <input type="text" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="label" value="${item.label || ''}" placeholder="${placeholder}">
-                  <input type="number" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="value" value="${item.value || 0}" step="0.01" placeholder="0.00">
-                  <select class="frequency-select" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="frequency">
+                  <input type="text" class="subcategory-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="label" value="${item.label || ''}" placeholder="" aria-label="Description for ${categoryLabel} item">
+                  <input type="number" class="subcategory-input currency-input" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="value" value="${item.value > 0 ? item.value : '0.00'}" step="0.01" min="0" placeholder="0.00" aria-label="Amount for ${categoryLabel} item">
+                  <select class="frequency-select" data-input-type="sub" data-category="${categoryKey}" data-item-index="${itemIndex}" data-field="frequency" aria-label="Frequency for ${categoryLabel} item">
                     <option value="daily" ${item.frequency === 'daily' ? 'selected' : ''}>Daily</option>
                     <option value="weekly" ${item.frequency === 'weekly' ? 'selected' : ''}>Weekly</option>
                     <option value="biweekly" ${item.frequency === 'biweekly' ? 'selected' : ''}>Bi-weekly</option>
                     <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
                     <option value="yearly" ${item.frequency === 'yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
-                  <button class="remove-btn" data-category="${categoryKey}" data-item-index="${itemIndex}" title="Remove">×</button>
+                  <button class="remove-btn" data-category="${categoryKey}" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">×</button>
                 </div>
               </div>
             `;
@@ -1486,16 +1627,16 @@
           html += `
             <div class="category-body visible">
               <div class="simple-input-wrapper">
-                <input type="text" class="simple-input-field" data-input-type="simple" data-category="${categoryKey}" data-field="label" placeholder="${placeholder}">
-                <input type="number" class="simple-input-field" data-input-type="simple" data-category="${categoryKey}" data-field="value" placeholder="0.00" step="0.01">
-                <select class="frequency-select" data-input-type="simple" data-category="${categoryKey}" data-field="frequency">
+                <input type="text" class="simple-input-field" data-input-type="simple" data-category="${categoryKey}" data-field="label" placeholder="${placeholder}" aria-label="Description for ${categoryLabel}">
+                <input type="number" class="simple-input-field currency-input" data-input-type="simple" data-category="${categoryKey}" data-field="value" placeholder="0.00" step="0.01" min="0" value="0.00" aria-label="Amount for ${categoryLabel}">
+                <select class="frequency-select" data-input-type="simple" data-category="${categoryKey}" data-field="frequency" aria-label="Frequency for ${categoryLabel}">
                   <option value="daily">Daily</option>
                   <option value="weekly">Weekly</option>
                   <option value="biweekly">Bi-weekly</option>
                   <option value="monthly" selected>Monthly</option>
                   <option value="yearly">Yearly</option>
                 </select>
-                <div style="width: 28px;"></div>
+                <div style="width: 32px;"></div>
               </div>
             </div>
           `;
