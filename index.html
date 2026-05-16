@@ -857,7 +857,7 @@
 
       .subcategory-row,
       .simple-input-wrapper {
-        grid-template-columns: 1fr 55px 70px 32px;
+        grid-template-columns: 1fr 55px 65px 40px;
         gap: 0.3rem;
       }
 
@@ -891,8 +891,8 @@
       .remove-btn {
         min-width: 40px;
         min-height: 40px;
-        width: 32px;
-        height: 32px;
+        width: 40px;
+        height: 40px;
       }
     }
   </style>
@@ -956,6 +956,7 @@
         this.applyTheme();
         this.render();
         this.attachEventListeners();
+        this.attachModeToggleListener();
       }
 
       applyTheme() {
@@ -963,6 +964,19 @@
           document.documentElement.setAttribute('data-theme', 'dark');
         } else {
           document.documentElement.removeAttribute('data-theme');
+        }
+      }
+
+      attachModeToggleListener() {
+        const modeToggle = document.querySelector('.mode-toggle');
+        if (modeToggle) {
+          modeToggle.removeEventListener('click', this.modeToggleHandler);
+          this.modeToggleHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleMode();
+          };
+          modeToggle.addEventListener('click', this.modeToggleHandler);
         }
       }
 
@@ -1001,17 +1015,9 @@
           btn.addEventListener('click', (e) => {
             this.activeTab = e.target.getAttribute('data-tab');
             this.render();
+            this.attachModeToggleListener();
           });
         });
-
-        const modeToggle = document.querySelector('.mode-toggle');
-        if (modeToggle) {
-          modeToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.toggleMode();
-          });
-        }
 
         const uploadZone = document.querySelector('.upload-zone');
         if (uploadZone) {
@@ -1087,7 +1093,6 @@
             }
             this.spendingCategories[categoryKey].items[itemIndex][field] = value;
 
-            // Update category total only
             const categoryElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
             if (categoryElement) {
               const total = this.getCategoryMonthlyTotal(categoryKey);
@@ -1104,9 +1109,7 @@
         const category = this.spendingCategories[categoryKey];
         const hasSimpleInput = category.items.length === 0;
 
-        // If there's a simple input, convert it to a multi-item state
         if (hasSimpleInput) {
-          // Get the current simple input values
           const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
           if (!categoryElement) return;
 
@@ -1120,7 +1123,6 @@
             const value = Number(valueInput?.value) || 0;
             const frequency = frequencySelect?.value || 'monthly';
 
-            // Add the first item with the values from the simple input
             category.items.push({
               label: label,
               value: value,
@@ -1129,32 +1131,27 @@
           }
         }
 
-        // Add a second blank item
         category.items.push({
           label: '',
           value: 0,
           frequency: 'monthly',
         });
 
-        // Find the category body
         const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
         if (!categoryElement) return;
 
         const categoryBody = categoryElement.querySelector('.category-body');
         if (!categoryBody) return;
 
-        // Make sure body is visible
         if (!categoryBody.classList.contains('visible')) {
           categoryBody.classList.add('visible');
         }
 
-        // Remove simple wrapper if exists
         const simpleWrapper = categoryBody.querySelector('.simple-input-wrapper');
         if (simpleWrapper) {
           simpleWrapper.remove();
         }
 
-        // Render all items fresh in category body
         categoryBody.innerHTML = '';
         category.items.forEach((item, itemIndex) => {
           const itemHTML = `
@@ -1176,18 +1173,15 @@
           categoryBody.insertAdjacentHTML('beforeend', itemHTML);
         });
 
-        // Reattach event listeners
         this.attachRemoveButtons();
         this.attachInputListeners();
 
-        // Update total
         const categoryTotalElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
         if (categoryTotalElement) {
           const total = this.getCategoryMonthlyTotal(categoryKey);
           categoryTotalElement.textContent = this.formatCurrency(total);
         }
 
-        // Focus the second item's label input
         const secondItemLabel = categoryBody.querySelector(`[data-item-index="1"][data-field="label"]`);
         if (secondItemLabel) {
           setTimeout(() => secondItemLabel.focus(), 50);
@@ -1198,7 +1192,6 @@
         const category = this.spendingCategories[categoryKey];
         category.items.splice(itemIndex, 1);
 
-        // Find and remove the item from DOM
         const categoryElement = document.querySelector(`[data-category-key="${categoryKey}"]`);
         if (!categoryElement) return;
 
@@ -1208,7 +1201,6 @@
           setTimeout(() => itemElement.remove(), 300);
         }
 
-        // Update indices of remaining items
         const categoryBody = categoryElement.querySelector('.category-body');
         if (categoryBody) {
           const items = categoryBody.querySelectorAll('.subcategory-item');
@@ -1222,7 +1214,6 @@
           });
         }
 
-        // Update category total
         const categoryTotalElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
         if (categoryTotalElement) {
           const total = this.getCategoryMonthlyTotal(categoryKey);
@@ -1259,6 +1250,7 @@
 
           this.paystubs.push(paystubData);
           this.render();
+          this.attachModeToggleListener();
 
           try {
             const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1299,10 +1291,12 @@
               const parsed = JSON.parse(cleanedText);
               lastPaystub.extractedData = { ...lastPaystub.extractedData, ...parsed };
               this.render();
+              this.attachModeToggleListener();
             }
           } catch (error) {
             console.error('Error:', error);
             this.render();
+            this.attachModeToggleListener();
           }
         };
         reader.readAsDataURL(file);
@@ -1714,7 +1708,7 @@
                   <option value="monthly" selected>Monthly</option>
                   <option value="yearly">Yearly</option>
                 </select>
-                <div style="width: 32px;"></div>
+                <div style="width: 40px;"></div>
               </div>
             </div>
           `;
