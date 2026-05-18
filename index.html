@@ -848,7 +848,7 @@
 
     .spending-breakdown {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
       margin-top: 1rem;
       margin-bottom: 1.5rem;
@@ -930,8 +930,8 @@
       font-size: 0.85rem;
       font-weight: 500;
       color: var(--text-primary);
-      margin-bottom: 0.75rem;
-      padding-top: 1rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
     }
 
     .chart-section-description {
@@ -939,9 +939,9 @@
       color: var(--text-secondary);
       margin-bottom: 1.25rem;
       line-height: 1.4;
+      text-align: center;
     }
 
-    /* Donut Chart Styles */
     .chart-container {
       position: relative;
       width: 100%;
@@ -1108,7 +1108,7 @@
       }
 
       .subcategory-row {
-        grid-template-columns: 1fr 75px 55px 32px;
+        grid-template-columns: 1fr 65px 50px 32px;
         gap: 0.25rem;
       }
 
@@ -1120,7 +1120,7 @@
 
       .frequency-select {
         font-size: 0.65rem;
-        padding: 0.4rem 0.4rem;
+        padding: 0.4rem 0.25rem;
         min-height: 40px;
       }
 
@@ -1190,7 +1190,6 @@
       .chart-section-header {
         font-size: 0.8rem;
         margin-bottom: 0.5rem;
-        padding-top: 0.75rem;
       }
 
       .chart-section-description {
@@ -1533,7 +1532,6 @@
 
         const isTouchDevice = window.matchMedia('(hover: none)').matches;
         const initialState = this.evaluateChartArrays();
-        const businessModel = this.buildBusinessModel();
 
         this.timeScaleRefreshChart = new Chart(ctx, {
           type: 'doughnut',
@@ -1573,10 +1571,12 @@
                   title: (tooltipItems) => {
                     if (tooltipItems.length === 0) return '';
                     const idx = tooltipItems[0].dataIndex;
+                    const businessModel = this.buildBusinessModel();
                     return businessModel[idx].parentLabel.toUpperCase();
                   },
                   label: (context) => {
                     const idx = context.dataIndex;
+                    const businessModel = this.buildBusinessModel();
                     const meta = businessModel[idx];
                     const currentSliceValue = context.parsed;
 
@@ -1896,7 +1896,6 @@
         const totalMonthly = this.getSpendingTotals();
         const daily = totalMonthly / 30;
         const weekly = totalMonthly / 4.286;
-        const biweekly = totalMonthly / 2.143;
         const yearly = totalMonthly * 12;
 
         const breakdownItems = document.querySelectorAll('[data-breakdown-period]');
@@ -1906,7 +1905,6 @@
           switch(period) {
             case 'daily': value = daily; break;
             case 'weekly': value = weekly; break;
-            case 'biweekly': value = biweekly; break;
             case 'monthly': value = totalMonthly; break;
             case 'yearly': value = yearly; break;
           }
@@ -2431,7 +2429,6 @@
       renderAggregatedSpendingCardHTML(totalMonthly) {
         const daily = totalMonthly / 30;
         const weekly = totalMonthly / 4.286;
-        const biweekly = totalMonthly / 2.143;
         const yearly = totalMonthly * 12;
 
         return `
@@ -2445,10 +2442,6 @@
               <div class="breakdown-item" data-breakdown-period="weekly">
                 <div class="breakdown-label">Weekly</div>
                 <div class="breakdown-value">${this.formatCurrency(weekly)}</div>
-              </div>
-              <div class="breakdown-item" data-breakdown-period="biweekly">
-                <div class="breakdown-label">Bi-weekly</div>
-                <div class="breakdown-value">${this.formatCurrency(biweekly)}</div>
               </div>
               <div class="breakdown-item" data-breakdown-period="monthly">
                 <div class="breakdown-label">Monthly</div>
@@ -2474,7 +2467,6 @@
             <div class="timeframe-navigation">
               <button class="timeframe-btn" data-interval="daily">Daily</button>
               <button class="timeframe-btn" data-interval="weekly">Weekly</button>
-              <button class="timeframe-btn" data-interval="biweekly">Bi-weekly</button>
               <button class="timeframe-btn active" data-interval="monthly">Monthly</button>
               <button class="timeframe-btn" data-interval="yearly">Yearly</button>
             </div>
