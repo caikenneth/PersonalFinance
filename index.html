@@ -713,7 +713,7 @@
 
     .subcategory-row {
       display: grid;
-      grid-template-columns: 1fr 80px 65px 35px;
+      grid-template-columns: 1fr 70px 80px 35px;
       gap: 0.4rem;
       align-items: center;
       width: 100%;
@@ -744,10 +744,10 @@
     }
 
     .frequency-select {
-      padding: 0.4rem 0.2rem 0.4rem 0.35rem;
+      padding: 0.4rem 0.3rem 0.4rem 0.35rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       background: var(--bg-elevated);
       color: var(--text-primary);
       cursor: pointer;
@@ -755,6 +755,7 @@
       outline: none;
       min-height: 44px;
       width: 100%;
+      text-align: center;
     }
 
     .frequency-select:focus {
@@ -846,14 +847,16 @@
       display: inline-block;
     }
 
+    .breakdown-card-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
     .spending-breakdown {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      margin-top: 1rem;
       margin-bottom: 1.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
     }
 
     .breakdown-item {
@@ -863,6 +866,31 @@
       padding: 1rem;
       text-align: center;
       box-shadow: 0 1px 4px var(--shadow);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .breakdown-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .breakdown-item.active::after {
+      opacity: 1;
+    }
+
+    .breakdown-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px var(--shadow);
     }
 
     .breakdown-label {
@@ -934,22 +962,12 @@
       text-align: center;
     }
 
-    .chart-section-description {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.25rem;
-      line-height: 1.4;
-      text-align: center;
-    }
-
     .chart-container {
       position: relative;
       width: 100%;
       max-width: 280px;
       height: 280px;
-      margin-bottom: 1.5rem;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 1.5rem auto 1.5rem auto;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
@@ -986,46 +1004,6 @@
       letter-spacing: -0.02em;
       color: var(--text-primary);
       font-family: 'Roboto', sans-serif;
-    }
-
-    .timeframe-navigation {
-      display: flex;
-      background-color: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 4px;
-      width: 100%;
-      justify-content: space-between;
-      transition: all 0.3s ease;
-      touch-action: manipulation;
-    }
-
-    .timeframe-btn {
-      background: none;
-      border: none;
-      outline: none;
-      font-family: 'Sora', sans-serif;
-      font-size: 0.76rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      padding: 10px 6px;
-      border-radius: 10px;
-      cursor: pointer;
-      flex: 1;
-      text-align: center;
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .timeframe-btn:hover {
-      color: var(--text-primary);
-    }
-
-    .timeframe-btn.active {
-      background-color: var(--text-primary);
-      color: var(--bg-input);
-      font-weight: 600;
     }
 
     @media (min-width: 641px) {
@@ -1108,7 +1086,7 @@
       }
 
       .subcategory-row {
-        grid-template-columns: 1fr 65px 50px 32px;
+        grid-template-columns: 1fr 60px 70px 32px;
         gap: 0.25rem;
       }
 
@@ -1148,7 +1126,6 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
         margin-bottom: 1rem;
-        padding-bottom: 1rem;
       }
 
       .breakdown-item {
@@ -1184,17 +1161,12 @@
       .chart-container {
         max-width: 200px;
         height: 200px;
-        margin-bottom: 1rem;
+        margin: 1rem auto 1rem auto;
       }
 
       .chart-section-header {
         font-size: 0.8rem;
         margin-bottom: 0.5rem;
-      }
-
-      .chart-section-description {
-        font-size: 0.7rem;
-        margin-bottom: 1rem;
       }
     }
 
@@ -1235,7 +1207,7 @@
 </head>
 <body>
   <div id="root"></div>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     class FinancialDashboard {
       constructor() {
@@ -1290,7 +1262,6 @@
         this.timeScaleRefreshChart = null;
         this.currentInterval = 'monthly';
         this.activeExpandedCategoryId = null;
-        this.chartDataVersion = 0;
         this.init();
       }
 
@@ -1365,6 +1336,26 @@
         }
       }
 
+      updateBreakdownValues() {
+        const totalMonthly = this.getSpendingTotals();
+        const breakdownItems = document.querySelectorAll('.breakdown-item');
+        const periods = {
+          daily: totalMonthly / 30,
+          weekly: totalMonthly / 4.286,
+          biweekly: totalMonthly / 2.143,
+          monthly: totalMonthly,
+          yearly: totalMonthly * 12,
+        };
+
+        breakdownItems.forEach(item => {
+          const period = item.getAttribute('data-breakdown-period');
+          const valueEl = item.querySelector('.breakdown-value');
+          if (valueEl) {
+            valueEl.textContent = this.formatCurrency(periods[period] || 0);
+          }
+        });
+      }
+
       attachEventListeners() {
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(btn => {
@@ -1398,29 +1389,30 @@
         this.attachAddCategoryButton();
         this.attachSortButton();
         this.attachPercentageToggle();
-        this.attachTimeframeButtons();
+        this.attachBreakdownItemListeners();
       }
 
-      attachTimeframeButtons() {
-        const buttons = document.querySelectorAll('.timeframe-btn');
-        buttons.forEach(btn => {
-          btn.removeEventListener('click', btn.clickHandler);
-          btn.clickHandler = (e) => {
+      attachBreakdownItemListeners() {
+        const breakdownItems = document.querySelectorAll('.breakdown-item');
+        breakdownItems.forEach(item => {
+          item.removeEventListener('click', item.clickHandler);
+          item.clickHandler = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.switchInterval(e.target.getAttribute('data-interval'), btn);
+            const targetInterval = item.getAttribute('data-breakdown-period');
+            this.switchInterval(targetInterval, item);
           };
-          btn.addEventListener('click', btn.clickHandler);
+          item.addEventListener('click', item.clickHandler);
         });
       }
 
-      switchInterval(targetFrequency, buttonNode) {
+      switchInterval(targetFrequency, triggerElement) {
         if (this.currentInterval === targetFrequency) return;
         
         this.currentInterval = targetFrequency;
 
-        document.querySelectorAll('.timeframe-btn').forEach(btn => btn.classList.remove('active'));
-        buttonNode.classList.add('active');
+        document.querySelectorAll('.breakdown-item').forEach(item => item.classList.remove('active'));
+        triggerElement.classList.add('active');
 
         this.updateChartDisplay();
 
@@ -1567,6 +1559,7 @@
                 boxPadding: 8,
                 usePointStyle: true,
                 caretSize: 0,
+                yAlign: 'bottom',
                 callbacks: {
                   title: (tooltipItems) => {
                     if (tooltipItems.length === 0) return '';
@@ -1705,6 +1698,7 @@
 
             this.updateAllCategoryTotals();
             this.updateChartData();
+            this.updateBreakdownValues();
           };
 
           input.addEventListener('focus', input.focusHandler);
@@ -1889,30 +1883,6 @@
         Object.keys(this.spendingCategories).forEach(categoryKey => {
           this.updateCategoryTotal(categoryKey);
         });
-        this.updateAggregatedSpendingCard();
-      }
-
-      updateAggregatedSpendingCard() {
-        const totalMonthly = this.getSpendingTotals();
-        const daily = totalMonthly / 30;
-        const weekly = totalMonthly / 4.286;
-        const yearly = totalMonthly * 12;
-
-        const breakdownItems = document.querySelectorAll('[data-breakdown-period]');
-        breakdownItems.forEach(item => {
-          const period = item.getAttribute('data-breakdown-period');
-          let value = 0;
-          switch(period) {
-            case 'daily': value = daily; break;
-            case 'weekly': value = weekly; break;
-            case 'monthly': value = totalMonthly; break;
-            case 'yearly': value = yearly; break;
-          }
-          const valueElement = item.querySelector('.breakdown-value');
-          if (valueElement) {
-            valueElement.textContent = this.formatCurrency(value);
-          }
-        });
       }
 
       updateChartData() {
@@ -1992,6 +1962,7 @@
             delete this.categoryLabels[categoryKey];
             delete this.categoryPlaceholders[categoryKey];
             this.updateChartData();
+            this.updateBreakdownValues();
           }, 300);
           return;
         }
@@ -2017,6 +1988,7 @@
 
         this.updateCategoryTotal(categoryKey);
         this.updateChartData();
+        this.updateBreakdownValues();
       }
 
       handleImageCapture(event) {
@@ -2172,6 +2144,17 @@
           biMonthlyPaycheck,
           weeklyPaycheck,
         };
+      }
+
+      escapeHtml(text) {
+        const map = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
       }
 
       renderPaycheckCardsHTML(paycheck) {
@@ -2415,46 +2398,31 @@
         return html;
       }
 
-      escapeHtml(text) {
-        const map = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
-      }
-
       renderAggregatedSpendingCardHTML(totalMonthly) {
-        const daily = totalMonthly / 30;
-        const weekly = totalMonthly / 4.286;
-        const yearly = totalMonthly * 12;
-
         return `
-          <div class="card">
+          <div class="card breakdown-card-wrapper">
             <div class="card-title">Total spending</div>
             <div class="spending-breakdown">
               <div class="breakdown-item" data-breakdown-period="daily">
                 <div class="breakdown-label">Daily</div>
-                <div class="breakdown-value">${this.formatCurrency(daily)}</div>
+                <div class="breakdown-value">${this.formatCurrency(totalMonthly / 30)}</div>
               </div>
               <div class="breakdown-item" data-breakdown-period="weekly">
                 <div class="breakdown-label">Weekly</div>
-                <div class="breakdown-value">${this.formatCurrency(weekly)}</div>
+                <div class="breakdown-value">${this.formatCurrency(totalMonthly / 4.286)}</div>
               </div>
-              <div class="breakdown-item" data-breakdown-period="monthly">
+              <div class="breakdown-item active" data-breakdown-period="monthly">
                 <div class="breakdown-label">Monthly</div>
                 <div class="breakdown-value">${this.formatCurrency(totalMonthly)}</div>
               </div>
               <div class="breakdown-item" data-breakdown-period="yearly">
                 <div class="breakdown-label">Yearly</div>
-                <div class="breakdown-value">${this.formatCurrency(yearly)}</div>
+                <div class="breakdown-value">${this.formatCurrency(totalMonthly * 12)}</div>
               </div>
             </div>
 
             <div class="chart-section-header">Spending Breakdown</div>
-            <div class="chart-section-description">Click any category segment to view its subcategories.</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4; text-align: center;">Click any category segment to view its subcategories.</div>
 
             <div class="chart-container">
               <canvas id="timeScaleRefreshChart"></canvas>
@@ -2462,13 +2430,6 @@
                 <div class="label" id="centerLabelDisplay">Monthly</div>
                 <div class="total-amount" id="lockedCenterDisplay">$0.00</div>
               </div>
-            </div>
-
-            <div class="timeframe-navigation">
-              <button class="timeframe-btn" data-interval="daily">Daily</button>
-              <button class="timeframe-btn" data-interval="weekly">Weekly</button>
-              <button class="timeframe-btn active" data-interval="monthly">Monthly</button>
-              <button class="timeframe-btn" data-interval="yearly">Yearly</button>
             </div>
           </div>
         `;
