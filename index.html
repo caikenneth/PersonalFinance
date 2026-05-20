@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Earnings & Spending</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #6b8e66;
@@ -29,14 +30,24 @@
       --warning: #c89852;
       --danger: #a85656;
       --shadow: rgba(45, 45, 45, 0.04);
+      --chart-1: #6b8e66;
+      --chart-2: #c9a878;
+      --chart-3: #8fa686;
+      --chart-4: #d4a574;
+      --chart-5: #7cb896;
+      --chart-6: #b89968;
+      --chart-7: #a8956d;
+      --chart-8: #95a87d;
+      --chart-9: #c4956a;
+      --chart-10: #7a9b6f;
     }
 
     html[data-theme="dark"] {
-      --bg-base: #2a2620;
-      --bg-elevated: #363230;
-      --bg-hover: #3d3935;
-      --bg-input: #2f2b27;
-      --bg-item: #2f2b27;
+      --bg-base: #1A1919;
+      --bg-elevated: #232221;
+      --bg-hover: #2a2928;
+      --bg-input: #1a1919; 
+      --bg-item: #232221;
       --text-primary: #f5f3f0;
       --text-secondary: #c9bfb5;
       --text-tertiary: #8f8681;
@@ -62,7 +73,7 @@
     }
 
     body {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg-base);
       color: var(--text-primary);
       line-height: 1.6;
@@ -129,8 +140,9 @@
     }
 
     .header-content h1 {
+      font-family: 'Playfair Display', serif;
       font-size: 1.75rem;
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 0.25rem;
       letter-spacing: -0.01em;
       color: var(--text-primary);
@@ -144,7 +156,7 @@
 
     .mode-toggle {
       background: var(--bg-elevated);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 8px;
       padding: 0.5rem 0.6rem;
       cursor: pointer;
@@ -159,12 +171,13 @@
       outline: none;
       min-width: 44px;
       min-height: 44px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     .mode-toggle:hover {
-      border-color: var(--primary);
       color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .mode-toggle:active {
@@ -173,7 +186,6 @@
 
     .mode-toggle:focus {
       box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.15);
-      border-color: var(--primary);
     }
 
     .tab-nav {
@@ -207,6 +219,7 @@
 
     .tab-btn.active {
       color: var(--primary);
+      font-weight: 600;
     }
 
     .tab-btn.active::after {
@@ -217,6 +230,7 @@
       right: 0;
       height: 2px;
       background: var(--primary);
+      
     }
 
     .tab-content {
@@ -239,11 +253,11 @@
 
     .card {
       background: var(--bg-elevated);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      box-shadow: 0 1px 3px var(--shadow);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       animation: slideUp 0.5s ease-out;
     }
 
@@ -277,19 +291,19 @@
 
     .stat-card {
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 8px;
       padding: 1rem;
       text-align: center;
       position: relative;
       overflow: hidden;
       transition: all 0.2s ease;
-      box-shadow: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .stat-card:hover {
-      border-color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .stat-value {
@@ -306,6 +320,7 @@
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+
     }
 
     .upload-zone {
@@ -324,11 +339,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .upload-zone:hover {
       border-color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .upload-icon {
@@ -363,10 +380,10 @@
       max-width: 100%;
       max-height: 200px;
       border-radius: 8px;
-      border: 1px solid var(--border);
+      border: none;
       margin-bottom: 1.5rem;
       animation: fadeIn 0.4s ease;
-      box-shadow: 0 1px 3px var(--shadow);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     .line-item {
@@ -522,18 +539,18 @@
     }
 
     .spending-category {
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 8px;
       padding: 1rem;
       margin-bottom: 0.75rem;
       background: var(--bg-elevated);
       transition: all 0.3s ease;
-      box-shadow: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .spending-category:hover {
-      border-color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .category-header {
@@ -572,7 +589,6 @@
       transition: all 0.2s ease;
       outline: none;
       font-weight: 500;
-      font-family: inherit;
       flex: 1;
       min-height: 32px;
     }
@@ -613,7 +629,7 @@
       font-size: 0.7rem;
       opacity: 0;
       transition: opacity 0.3s ease;
-      box-shadow: 0 1px 3px var(--shadow);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       max-width: 180px;
       white-space: normal;
     }
@@ -688,10 +704,10 @@
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       border-radius: 6px;
-      border: 1px solid var(--border);
+      border: none;
       transition: all 0.2s ease;
       animation: slideInItem 0.3s ease-out;
-      box-shadow: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
     @keyframes slideInItem {
@@ -708,8 +724,8 @@
     }
 
     .subcategory-item:hover {
-      border-color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .subcategory-row {
@@ -811,7 +827,7 @@
 
     .sort-btn {
       background: var(--bg-elevated);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 6px;
       padding: 0.5rem 0.6rem;
       cursor: pointer;
@@ -825,12 +841,13 @@
       align-items: center;
       justify-content: center;
       font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     .sort-btn:hover {
-      border-color: var(--primary);
       color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .sort-btn:active {
@@ -839,7 +856,6 @@
 
     .sort-btn:focus {
       box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.15);
-      border-color: var(--primary);
     }
 
     .sort-icon {
@@ -862,11 +878,11 @@
 
     .breakdown-item {
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 8px;
       padding: 1rem;
       text-align: center;
-      box-shadow: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
@@ -890,8 +906,8 @@
     }
 
     .breakdown-item:hover {
-      border-color: var(--primary);
       background: var(--bg-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
     .breakdown-label {
@@ -901,6 +917,7 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 0.4rem;
+ 
     }
 
     .breakdown-value {
@@ -933,14 +950,14 @@
       transition: all 0.3s ease;
       outline: none;
       margin: 0 auto;
-      box-shadow: 0 1px 3px var(--shadow);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       align-self: center;
     }
 
     .add-category-btn:hover {
       background: var(--primary-light);
       transform: scale(1.08);
-      box-shadow: 0 2px 6px var(--shadow);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .add-category-btn:active {
@@ -948,7 +965,7 @@
     }
 
     .add-category-btn:focus {
-      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.2), 0 1px 3px var(--shadow);
+      box-shadow: 0 0 0 2px rgba(107, 142, 102, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
     .spending-categories-wrapper {
@@ -961,6 +978,7 @@
       color: var(--text-primary);
       margin-bottom: 0.5rem;
       text-align: center;
+ 
     }
 
     .chart-container {
@@ -968,7 +986,7 @@
       width: 100%;
       max-width: 280px;
       height: 280px;
-      margin: 1.5rem auto 1.5rem auto;
+      margin: 2rem auto 2rem auto;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
@@ -997,6 +1015,7 @@
       letter-spacing: 0.08em;
       color: var(--text-tertiary);
       margin-bottom: 2px;
+ 
     }
 
     .chart-center-text .total-amount {
@@ -1023,7 +1042,7 @@
       }
 
       .container {
-        padding: 1rem 0.75rem;
+        padding: 1.25rem 1rem;
         max-width: 100%;
         overflow-x: hidden;
       }
@@ -1479,8 +1498,16 @@
 
       getCategoryColor(index, alpha = 1) {
         const colors = [
-          '#6b8e66', '#c9a878', '#8fa686', '#a87d52', '#ddb89d',
-          '#4d6250', '#6b8e66', '#c9a878', '#8fa686', '#a87d52',
+        	'#D98A6C',
+			'#6B8E66',
+			'#E0B063',
+			'#8F9779',
+			'#5A7887',
+			'#A36A75',
+			'#4A5343',
+			'#D1C2A5',
+			'#7D6B7D',
+			'#5C4D43'
         ];
         const color = colors[index % colors.length];
         if (alpha < 1) {
@@ -2496,7 +2523,6 @@
         } else {
           html += `<div class="tab-content active" role="tabpanel">`;
 
-          html += `<div class="card spending-card-wrapper">`;
           html += `<div class="spending-controls">
             <button class="sort-btn" title="Sort categories by spending percentage" aria-label="Sort by weight">
               <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2514,9 +2540,9 @@
 
           html += this.renderSpendingCategoryHTML('other', this.spendingCategories.other);
           html += `</div>`;
-
+		  html += `<div style="height: 10px;"></div>`;
           html += `<button class="add-category-btn" title="Add new spending category" aria-label="Add new spending category">+</button>`;
-          html += `</div>`;
+          html += `<div style="height: 20px;"></div>`;
 
           html += this.renderAggregatedSpendingCardHTML(totalSpending);
 
@@ -2524,7 +2550,7 @@
             html += `
               <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0;">
-                  <span style="font-size: 0.85rem; color: var(--text-secondary);">Total spending</span>
+                  <span style="font-size: 0.85rem; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;">Total spending</span>
                   <span style="font-family: 'Roboto', sans-serif; font-weight: 600; color: var(--text-primary);">${this.formatCurrency(totalSpending)}</span>
                 </div>
                 <div class="total-row">
