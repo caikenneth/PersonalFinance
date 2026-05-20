@@ -561,6 +561,14 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     }
 
+    html[data-theme="dark"] .spending-category {
+      background: var(--bg-item);
+    }
+
+    html[data-theme="dark"] .spending-category:hover {
+      background: var(--bg-elevated);
+    }
+
     .category-header {
       display: flex;
       align-items: center;
@@ -569,8 +577,8 @@
     }
 
     .category-name {
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-size: 0.9rem;
+      font-weight: 600;
       color: var(--text-primary);
       flex: 1;
       cursor: pointer;
@@ -615,7 +623,7 @@
       text-align: right;
       cursor: help;
       position: relative;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-width: 70px;
       transition: all 0.3s ease;
       display: flex;
@@ -737,6 +745,14 @@
     .subcategory-item:hover {
       background: var(--bg-hover);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    html[data-theme="dark"] .subcategory-item {
+      background: var(--bg-elevated);
+    }
+
+    html[data-theme="dark"] .subcategory-item:hover {
+      background: var(--bg-item);
     }
 
     .subcategory-row {
@@ -964,6 +980,8 @@
       margin: 0 auto;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       align-self: center;
+      line-height: 1;
+      padding: 0;
     }
 
     .add-category-btn:hover {
@@ -1035,7 +1053,7 @@
       font-weight: 600;
       letter-spacing: -0.02em;
       color: var(--text-primary);
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     @media (min-width: 641px) {
@@ -1565,6 +1583,15 @@
         const isTouchDevice = window.matchMedia('(hover: none)').matches;
         const initialState = this.evaluateChartArrays();
 
+        let touchStartTime = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let longPressTimer = null;
+        let activeTooltipElement = null;
+        let mobileTooltipActive = false;
+
+        const chartContainer = ctx.parentElement;
+
         this.timeScaleRefreshChart = new Chart(ctx, {
           type: 'doughnut',
           data: {
@@ -1585,12 +1612,12 @@
             plugins: {
               legend: { display: false },
               tooltip: {
-                enabled: true,
+                enabled: !isTouchDevice,
                 backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#f5f3f0' : '#2d2d2d',
                 titleColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#2a2620' : '#f5f3f0',
-                titleFont: { family: 'Sora', size: 11, weight: '700', lineHeight: 1.5 },
+                titleFont: { family: 'Plus Jakarta Sans', size: 11, weight: '700', lineHeight: 1.5 },
                 bodyColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#2a2620' : '#f5f3f0',
-                bodyFont: { family: 'Sora', size: 13, weight: '400' },
+                bodyFont: { family: 'Plus Jakarta Sans', size: 13, weight: '400' },
                 padding: { top: 10, bottom: 12, left: 14, right: 14 },
                 cornerRadius: 8,
                 displayColors: true,
@@ -1632,7 +1659,7 @@
               }
             },
             onClick: (event, activeElements) => {
-              if (activeElements && activeElements.length > 0) {
+              if (!isTouchDevice && activeElements && activeElements.length > 0) {
                 const targetElementIdx = activeElements[0].index;
                 const businessModelArray = this.buildBusinessModel();
                 const metadataItem = businessModelArray[targetElementIdx];
@@ -1653,13 +1680,107 @@
                 this.timeScaleRefreshChart.data.datasets[0].backgroundColor = nextStateValues.colors;
 
                 this.timeScaleRefreshChart.update();
+              } else if (isTouchDevice && activeElements && activeElements.length > 0) {
+                const targetElementIdx = activeElements[0].index;
+                const businessModelArray = this.buildBusinessModel();
+                const metadataItem = businessModelArray[targetElementIdx];
+
+                const currentValue = this.timeScaleRefreshChart.data.datasets[0].data[targetElementIdx];
+                if (currentValue === 0) return;
+
+                if (this.activeExpandedCategoryId === metadataItem.parentId) {
+                  mobileTooltipActive = true;
+                  this.timeScaleRefreshChart.tooltip.setActiveElements([activeElements[0]], { x: event.x, y: event.y });
+                  this.timeScaleRefreshChart.update('none');
+                }
               } else if (isTouchDevice) {
+                mobileTooltipActive = false;
                 this.timeScaleRefreshChart.tooltip.setActiveElements([], { x: 0, y: 0 });
-                this.timeScaleRefreshChart.update();
+                this.timeScaleRefreshChart.update('none');
               }
             }
           }
         });
+
+        if (isTouchDevice) {
+          ctx.addEventListener('touchstart', (e) => {
+            touchStartTime = Date.now();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            mobileTooltipActive = false;
+            this.timeScaleRefreshChart.tooltip.setActiveElements([], { x: 0, y: 0 });
+            this.timeScaleRefreshChart.update('none');
+
+            longPressTimer = setTimeout(() => {
+              const canvasRect = ctx.getBoundingClientRect();
+              const x = e.touches[0].clientX - canvasRect.left;
+              const y = e.touches[0].clientY - canvasRect.top;
+
+              const canvasPosition = Chart.helpers.getRelativePosition(e.touches[0], this.timeScaleRefreshChart);
+              const dataX = this.timeScaleRefreshChart.scales.x ? this.timeScaleRefreshChart.scales.x.getValueForPixel(canvasPosition.x) : canvasPosition.x;
+              const dataY = this.timeScaleRefreshChart.scales.y ? this.timeScaleRefreshChart.scales.y.getValueForPixel(canvasPosition.y) : canvasPosition.y;
+
+              const canvasWidth = ctx.width;
+              const canvasHeight = ctx.height;
+              const centerX = canvasWidth / 2;
+              const centerY = canvasHeight / 2;
+              const normalizedX = (x - centerX) / centerX;
+              const normalizedY = (y - centerY) / centerY;
+              
+              const elements = this.timeScaleRefreshChart.getElementsAtEventForMode(e.touches[0], 'nearest', { intersect: true }, false);
+              
+              if (elements && elements.length > 0) {
+                const targetElementIdx = elements[0].index;
+                const businessModelArray = this.buildBusinessModel();
+                const metadataItem = businessModelArray[targetElementIdx];
+
+                const currentValue = this.timeScaleRefreshChart.data.datasets[0].data[targetElementIdx];
+                if (currentValue === 0) return;
+
+                if (this.activeExpandedCategoryId !== metadataItem.parentId) {
+                  this.activeExpandedCategoryId = metadataItem.parentId;
+                  const nextStateValues = this.evaluateChartArrays();
+                  
+                  this.timeScaleRefreshChart.data.labels = nextStateValues.labels;
+                  this.timeScaleRefreshChart.data.datasets[0].data = nextStateValues.values;
+                  this.timeScaleRefreshChart.data.datasets[0].backgroundColor = nextStateValues.colors;
+
+                  this.timeScaleRefreshChart.update();
+                }
+              }
+            }, 500);
+          }, false);
+
+          ctx.addEventListener('touchend', (e) => {
+            if (longPressTimer) {
+              clearTimeout(longPressTimer);
+              longPressTimer = null;
+            }
+          }, false);
+
+          ctx.addEventListener('touchmove', (e) => {
+            const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+            const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+            
+            if (deltaX > 10 || deltaY > 10) {
+              if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+              }
+            }
+          }, false);
+
+          document.addEventListener('click', (e) => {
+            const chartContainerEl = document.querySelector('.chart-container');
+            const tooltipEl = this.timeScaleRefreshChart.tooltip._tooltipElements;
+            
+            if (chartContainerEl && !chartContainerEl.contains(e.target) && mobileTooltipActive) {
+              mobileTooltipActive = false;
+              this.timeScaleRefreshChart.tooltip.setActiveElements([], { x: 0, y: 0 });
+              this.timeScaleRefreshChart.update('none');
+            }
+          }, false);
+        }
 
         this.updateChartDisplay();
       }
