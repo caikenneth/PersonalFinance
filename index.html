@@ -1298,8 +1298,6 @@
         };
         this.demoMode = false;
         this.savedState = null;
-        this.shakeThreshold = 15;
-        this.lastShakeTime = 0;
         this.categoryLabels = {
           housing: 'Housing',
           groceries: 'Groceries',
@@ -1355,37 +1353,38 @@
         this.applyTheme();
         this.render();
         this.attachModeToggleListener();
-        this.initShakeDetection();
+        this.attachTripleTapListener();
       }
 
-      initShakeDetection() {
-        if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
-          this.shakePromptPending = true;
-        } else {
-          window.addEventListener('devicemotion', (e) => this.handleDeviceMotion(e), false);
-        }
-      }
+      attachTripleTapListener() {
+        const headerTitle = document.querySelector('.header-content h1');
+        if (headerTitle) {
+          headerTitle.removeEventListener('click', headerTitle.clickHandler);
+          let tapCount = 0;
+          let tapTimer = null;
 
-      handleDeviceMotion(event) {
-        const acceleration = event.acceleration;
-        if (!acceleration) return;
-
-        const x = acceleration.x || 0;
-        const y = acceleration.y || 0;
-        const z = acceleration.z || 0;
-
-        const totalAcceleration = Math.sqrt(x * x + y * y + z * z);
-
-        if (totalAcceleration > this.shakeThreshold) {
-          const now = Date.now();
-          if (now - this.lastShakeTime > 1000) {
-            this.lastShakeTime = now;
-            if (this.demoMode) {
-              this.exitDemoMode();
-            } else {
-              this.promptDemoMode();
+          headerTitle.clickHandler = () => {
+            tapCount++;
+            
+            if (tapTimer) {
+              clearTimeout(tapTimer);
             }
-          }
+
+            if (tapCount === 3) {
+              tapCount = 0;
+              if (this.demoMode) {
+                this.exitDemoMode();
+              } else {
+                this.promptDemoMode();
+              }
+            } else {
+              tapTimer = setTimeout(() => {
+                tapCount = 0;
+              }, 300);
+            }
+          };
+
+          headerTitle.addEventListener('click', headerTitle.clickHandler);
         }
       }
 
@@ -1415,16 +1414,7 @@
 
         this.render();
         this.attachModeToggleListener();
-
-        if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
-          window.DeviceMotionEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('devicemotion', (e) => this.handleDeviceMotion(e), false);
-              }
-            })
-            .catch(console.error);
-        }
+        this.attachTripleTapListener();
       }
 
       exitDemoMode() {
@@ -1442,6 +1432,7 @@
 
         this.render();
         this.attachModeToggleListener();
+        this.attachTripleTapListener();
       }
 
       applyTheme() {
