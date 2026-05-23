@@ -1296,6 +1296,10 @@
           insurance: { items: [{ label: '', value: 0, frequency: 'monthly' }], isCustom: false },
           other: { items: [{ label: '', value: 0, frequency: 'monthly' }], isCustom: false },
         };
+        this.demoMode = false;
+        this.savedState = null;
+        this.shakeThreshold = 15;
+        this.lastShakeTime = 0;
         this.categoryLabels = {
           housing: 'Housing',
           groceries: 'Groceries',
@@ -1320,6 +1324,18 @@
           insurance: 'Auto, Health, Renters',
           other: 'Gym, Hobbies, Classes',
         };
+        this.demoDemoData = {
+          housing: { items: [{ label: 'Rent', value: 2500, frequency: 'monthly' }], isCustom: false },
+          groceries: { items: [{ label: 'Whole Foods', value: 150, frequency: 'weekly' }, { label: 'Farmer\'s Market', value: 50, frequency: 'weekly' }], isCustom: false },
+          phone: { items: [{ label: 'Verizon', value: 85, frequency: 'monthly' }], isCustom: false },
+          electric: { items: [{ label: 'Utilities', value: 120, frequency: 'monthly' }], isCustom: false },
+          internet: { items: [{ label: 'Fiber Connection', value: 75, frequency: 'monthly' }], isCustom: false },
+          creditCard: { items: [{ label: 'Interest Charges', value: 25, frequency: 'monthly' }], isCustom: false },
+          toiletries: { items: [{ label: 'Skincare & Hair', value: 60, frequency: 'monthly' }], isCustom: false },
+          netflix: { items: [{ label: 'Netflix', value: 16, frequency: 'monthly' }, { label: 'Spotify', value: 12, frequency: 'monthly' }], isCustom: false },
+          insurance: { items: [{ label: 'Auto Insurance', value: 145, frequency: 'monthly' }, { label: 'Renters Insurance', value: 20, frequency: 'monthly' }], isCustom: false },
+          other: { items: [{ label: 'Gym Membership', value: 50, frequency: 'monthly' }, { label: 'Dining Out', value: 200, frequency: 'monthly' }], isCustom: false },
+        };
         this.frequencyMultipliers = {
           daily: 30,
           weekly: 4.286,
@@ -1337,6 +1353,93 @@
 
       init() {
         this.applyTheme();
+        this.render();
+        this.attachModeToggleListener();
+        this.initShakeDetection();
+      }
+
+      initShakeDetection() {
+        if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+          this.shakePromptPending = true;
+        } else {
+          window.addEventListener('devicemotion', (e) => this.handleDeviceMotion(e), false);
+        }
+      }
+
+      handleDeviceMotion(event) {
+        const acceleration = event.acceleration;
+        if (!acceleration) return;
+
+        const x = acceleration.x || 0;
+        const y = acceleration.y || 0;
+        const z = acceleration.z || 0;
+
+        const totalAcceleration = Math.sqrt(x * x + y * y + z * z);
+
+        if (totalAcceleration > this.shakeThreshold) {
+          const now = Date.now();
+          if (now - this.lastShakeTime > 1000) {
+            this.lastShakeTime = now;
+            if (this.demoMode) {
+              this.exitDemoMode();
+            } else {
+              this.promptDemoMode();
+            }
+          }
+        }
+      }
+
+      promptDemoMode() {
+        const result = confirm('Enter demo mode to explore spending features with sample data?');
+        if (result) {
+          this.enterDemoMode();
+        }
+      }
+
+      enterDemoMode() {
+        this.demoMode = true;
+        this.savedState = {
+          activeTab: this.activeTab,
+          paystubs: JSON.parse(JSON.stringify(this.paystubs)),
+          spendingCategories: JSON.parse(JSON.stringify(this.spendingCategories)),
+          nextCustomCategoryId: this.nextCustomCategoryId,
+          showPercentageToggle: this.showPercentageToggle,
+          activeExpandedCategoryId: this.activeExpandedCategoryId,
+        };
+
+        this.spendingCategories = JSON.parse(JSON.stringify(this.demoDemoData));
+        this.activeTab = 'spending';
+        this.nextCustomCategoryId = 11;
+        this.showPercentageToggle = false;
+        this.activeExpandedCategoryId = null;
+
+        this.render();
+        this.attachModeToggleListener();
+
+        if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+          window.DeviceMotionEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('devicemotion', (e) => this.handleDeviceMotion(e), false);
+              }
+            })
+            .catch(console.error);
+        }
+      }
+
+      exitDemoMode() {
+        this.demoMode = false;
+        
+        if (this.savedState) {
+          this.activeTab = this.savedState.activeTab;
+          this.paystubs = JSON.parse(JSON.stringify(this.savedState.paystubs));
+          this.spendingCategories = JSON.parse(JSON.stringify(this.savedState.spendingCategories));
+          this.nextCustomCategoryId = this.savedState.nextCustomCategoryId;
+          this.showPercentageToggle = this.savedState.showPercentageToggle;
+          this.activeExpandedCategoryId = this.savedState.activeExpandedCategoryId;
+          this.savedState = null;
+        }
+
         this.render();
         this.attachModeToggleListener();
       }
