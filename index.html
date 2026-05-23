@@ -630,6 +630,8 @@
       align-items: center;
       justify-content: flex-end;
       gap: 0.3rem;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .tooltip {
@@ -982,6 +984,7 @@
       align-self: center;
       line-height: 1;
       padding: 0;
+      flex-shrink: 0;
     }
 
     .add-category-btn:hover {
@@ -1004,11 +1007,13 @@
 
     .chart-section-header {
       font-size: 0.85rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
       text-align: center;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     .chart-container {
@@ -1016,7 +1021,7 @@
       width: 100%;
       max-width: 280px;
       height: 280px;
-      margin: 2rem auto 2rem auto;
+      margin: 2rem auto 1.5rem auto;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
@@ -1053,6 +1058,15 @@
       font-weight: 600;
       letter-spacing: -0.02em;
       color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .chart-tip {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.75rem;
+      line-height: 1.4;
+      text-align: center;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
@@ -1216,7 +1230,12 @@
 
       .chart-section-header {
         font-size: 0.8rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .chart-tip {
+        font-size: 0.7rem;
+        margin-top: 0.5rem;
       }
     }
 
@@ -1263,6 +1282,7 @@
       constructor() {
         this.activeTab = 'paycheck';
         this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this.isTouchDevice = window.matchMedia('(hover: none)').matches;
         this.paystubs = [];
         this.spendingCategories = {
           housing: { items: [{ label: '', value: 0, frequency: 'monthly' }], isCustom: false },
@@ -1580,15 +1600,14 @@
         const ctx = document.getElementById('timeScaleRefreshChart');
         if (!ctx) return;
 
-        const isTouchDevice = window.matchMedia('(hover: none)').matches;
         const initialState = this.evaluateChartArrays();
 
         let touchStartTime = 0;
         let touchStartX = 0;
         let touchStartY = 0;
         let longPressTimer = null;
-        let activeTooltipElement = null;
         let mobileTooltipActive = false;
+        let lastTapTime = 0;
 
         const chartContainer = ctx.parentElement;
 
@@ -1608,11 +1627,11 @@
             maintainAspectRatio: false,
             cutout: '78%',
             devicePixelRatio: window.devicePixelRatio || 2,
-            events: isTouchDevice ? ['click'] : ['mousemove', 'mouseout', 'click', 'touchstart'],
+            events: this.isTouchDevice ? ['click'] : ['mousemove', 'mouseout', 'click', 'touchstart'],
             plugins: {
               legend: { display: false },
               tooltip: {
-                enabled: !isTouchDevice,
+                enabled: !this.isTouchDevice,
                 backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#f5f3f0' : '#2d2d2d',
                 titleColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#2a2620' : '#f5f3f0',
                 titleFont: { family: 'Plus Jakarta Sans', size: 11, weight: '700', lineHeight: 1.5 },
@@ -1627,6 +1646,7 @@
                 usePointStyle: true,
                 caretSize: 0,
                 yAlign: 'bottom',
+                xAlign: 'center',
                 callbacks: {
                   title: (tooltipItems) => {
                     if (tooltipItems.length === 0) return '';
@@ -1659,7 +1679,7 @@
               }
             },
             onClick: (event, activeElements) => {
-              if (!isTouchDevice && activeElements && activeElements.length > 0) {
+              if (!this.isTouchDevice && activeElements && activeElements.length > 0) {
                 const targetElementIdx = activeElements[0].index;
                 const businessModelArray = this.buildBusinessModel();
                 const metadataItem = businessModelArray[targetElementIdx];
@@ -1680,7 +1700,7 @@
                 this.timeScaleRefreshChart.data.datasets[0].backgroundColor = nextStateValues.colors;
 
                 this.timeScaleRefreshChart.update();
-              } else if (isTouchDevice && activeElements && activeElements.length > 0) {
+              } else if (this.isTouchDevice && activeElements && activeElements.length > 0) {
                 const targetElementIdx = activeElements[0].index;
                 const businessModelArray = this.buildBusinessModel();
                 const metadataItem = businessModelArray[targetElementIdx];
@@ -1693,7 +1713,7 @@
                   this.timeScaleRefreshChart.tooltip.setActiveElements([activeElements[0]], { x: event.x, y: event.y });
                   this.timeScaleRefreshChart.update('none');
                 }
-              } else if (isTouchDevice) {
+              } else if (this.isTouchDevice) {
                 mobileTooltipActive = false;
                 this.timeScaleRefreshChart.tooltip.setActiveElements([], { x: 0, y: 0 });
                 this.timeScaleRefreshChart.update('none');
@@ -1702,7 +1722,7 @@
           }
         });
 
-        if (isTouchDevice) {
+        if (this.isTouchDevice) {
           ctx.addEventListener('touchstart', (e) => {
             touchStartTime = Date.now();
             touchStartX = e.touches[0].clientX;
@@ -1720,13 +1740,6 @@
               const dataX = this.timeScaleRefreshChart.scales.x ? this.timeScaleRefreshChart.scales.x.getValueForPixel(canvasPosition.x) : canvasPosition.x;
               const dataY = this.timeScaleRefreshChart.scales.y ? this.timeScaleRefreshChart.scales.y.getValueForPixel(canvasPosition.y) : canvasPosition.y;
 
-              const canvasWidth = ctx.width;
-              const canvasHeight = ctx.height;
-              const centerX = canvasWidth / 2;
-              const centerY = canvasHeight / 2;
-              const normalizedX = (x - centerX) / centerX;
-              const normalizedY = (y - centerY) / centerY;
-              
               const elements = this.timeScaleRefreshChart.getElementsAtEventForMode(e.touches[0], 'nearest', { intersect: true }, false);
               
               if (elements && elements.length > 0) {
@@ -1737,16 +1750,19 @@
                 const currentValue = this.timeScaleRefreshChart.data.datasets[0].data[targetElementIdx];
                 if (currentValue === 0) return;
 
-                if (this.activeExpandedCategoryId !== metadataItem.parentId) {
+                if (this.activeExpandedCategoryId === metadataItem.parentId) {
+                  this.activeExpandedCategoryId = null;
+                } else {
                   this.activeExpandedCategoryId = metadataItem.parentId;
-                  const nextStateValues = this.evaluateChartArrays();
-                  
-                  this.timeScaleRefreshChart.data.labels = nextStateValues.labels;
-                  this.timeScaleRefreshChart.data.datasets[0].data = nextStateValues.values;
-                  this.timeScaleRefreshChart.data.datasets[0].backgroundColor = nextStateValues.colors;
-
-                  this.timeScaleRefreshChart.update();
                 }
+
+                const nextStateValues = this.evaluateChartArrays();
+                
+                this.timeScaleRefreshChart.data.labels = nextStateValues.labels;
+                this.timeScaleRefreshChart.data.datasets[0].data = nextStateValues.values;
+                this.timeScaleRefreshChart.data.datasets[0].backgroundColor = nextStateValues.colors;
+
+                this.timeScaleRefreshChart.update();
               }
             }, 500);
           }, false);
@@ -1772,7 +1788,6 @@
 
           document.addEventListener('click', (e) => {
             const chartContainerEl = document.querySelector('.chart-container');
-            const tooltipEl = this.timeScaleRefreshChart.tooltip._tooltipElements;
             
             if (chartContainerEl && !chartContainerEl.contains(e.target) && mobileTooltipActive) {
               mobileTooltipActive = false;
@@ -2037,6 +2052,23 @@
             this.updateAllCategoryTotals();
           };
           total.addEventListener('dblclick', total.dblclickHandler);
+
+          if (this.isTouchDevice) {
+            total.removeEventListener('touchend', total.touchendHandler);
+            total.touchendHandler = (e) => {
+              const currentTime = new Date().getTime();
+              const tapLength = currentTime - (total.lastTap || 0);
+              
+              if (tapLength < 300 && tapLength > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showPercentageToggle = !this.showPercentageToggle;
+                this.updateAllCategoryTotals();
+              }
+              total.lastTap = currentTime;
+            };
+            total.addEventListener('touchend', total.touchendHandler);
+          }
         });
       }
 
@@ -2560,9 +2592,13 @@
       }
 
       renderAggregatedSpendingCardHTML(totalMonthly) {
+        const tipText = this.isTouchDevice 
+          ? 'Long press any category segment to explore its subcategories.'
+          : 'Click any category segment to view its subcategories.';
+
         return `
           <div class="card breakdown-card-wrapper">
-            <div class="card-title">Total spending</div>
+            <div class="card-title">Total Spending & Breakdown</div>
             <div class="spending-breakdown">
               <div class="breakdown-item" data-breakdown-period="daily">
                 <div class="breakdown-label">Daily</div>
@@ -2582,9 +2618,6 @@
               </div>
             </div>
 
-            <div class="chart-section-header">Spending Breakdown</div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4; text-align: center;">Click any category segment to view its subcategories.</div>
-
             <div class="chart-container">
               <canvas id="timeScaleRefreshChart"></canvas>
               <div class="chart-center-text">
@@ -2592,6 +2625,8 @@
                 <div class="total-amount" id="lockedCenterDisplay">$0.00</div>
               </div>
             </div>
+
+            <div class="chart-tip">${tipText}</div>
           </div>
         `;
       }
@@ -2673,7 +2708,7 @@
 
           html += this.renderSpendingCategoryHTML('other', this.spendingCategories.other);
           html += `</div>`;
-		  html += `<div style="height: 10px;"></div>`;
+          html += `<div style="height: 10px;"></div>`;
           html += `<button class="add-category-btn" title="Add new spending category" aria-label="Add new spending category">+</button>`;
           html += `<div style="height: 20px;"></div>`;
 
