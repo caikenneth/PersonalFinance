@@ -238,10 +238,11 @@
     .tab-content {
       display: none;
       animation: fadeIn 0.3s ease-out;
+      flex: 1;
     }
 
     .tab-content.active {
-      display: block;
+      display: flex;
     }
 
     @keyframes fadeIn {
@@ -816,7 +817,7 @@
       border: none;
       color: var(--text-tertiary);
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1rem;
       padding: 0;
       width: 40px;
       height: 40px;
@@ -1074,9 +1075,352 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
+    /* Retirement Tab Styles */
+    /* Retirement Tab Styles - Matching RetirementTracker V1 Design */
+    .ret-grid-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2.5rem;
+    }
+
+    .ret-left-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .ret-right-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: sticky;
+      top: 1.5rem;
+      height: fit-content;
+    }
+
+    .ret-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .ret-field-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ret-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: help;
+    }
+
+    .ret-input {
+      background-color: var(--bg-input);
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      width: 100%;
+      outline: none;
+    }
+
+    .ret-input:focus {
+      border-color: var(--primary);
+      background-color: var(--bg-elevated);
+      box-shadow: 0 0 0 3px rgba(107, 142, 102, 0.15);
+    }
+
+    .ret-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ret-section-header h3 {
+      font-size: 1rem;
+      font-weight: 400;
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .ret-add-btn {
+      align-self: flex-start;
+      background-color: transparent;
+      color: var(--text-primary);
+      border: 1px dashed var(--primary);
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+      outline: none;
+      min-height: 44px;
+    }
+
+    .ret-add-btn:hover {
+      background-color: var(--bg-input);
+      border-style: solid;
+      transform: translateY(-1px);
+    }
+
+    .ret-accounts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .ret-account-row {
+      position: relative;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: all 0.2s ease;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .ret-account-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ret-account-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed var(--border);
+      padding: 0.2rem 0;
+      width: 60%;
+      border-radius: 0;
+      font-weight: 400;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .ret-account-title:focus {
+      border-bottom-color: var(--primary);
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .ret-remove-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .ret-remove-btn:hover {
+      color: var(--danger);
+      background-color: rgba(168, 86, 86, 0.1);
+    }
+
+    .ret-account-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .ret-metrics-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .ret-metric-tile {
+      background-color: var(--bg-input);
+      padding: 1.25rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .ret-metric-primary {
+      background-color: var(--text-primary);
+      color: var(--bg-elevated);
+    }
+
+    .ret-metric-primary .ret-metric-label {
+      color: var(--text-secondary);
+    }
+
+    .ret-metric-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .ret-metric-value {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      color: var(--primary);
+    }
+
+    .ret-metric-primary .ret-metric-value {
+      color: var(--bg-elevated);
+    }
+
+    .ret-chart-controls {
+      display: flex;
+      background-color: var(--bg-input);
+      padding: 0.25rem;
+      border-radius: 6px;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ret-chart-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-radius: calc(6px - 2px);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      outline: none;
+    }
+
+    .ret-chart-btn.active {
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .ret-chart-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+    }
+
+    @media (max-width: 1024px) {
+      .ret-grid-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .ret-right-section {
+        position: static;
+      }
+
+      .ret-form-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .ret-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ret-account-fields {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ret-account-title {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ret-grid-layout {
+        gap: 1.5rem;
+      }
+
+      .ret-left-section {
+        gap: 1.5rem;
+      }
+
+      .ret-right-section {
+        gap: 1.5rem;
+      }
+
+      .ret-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ret-account-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .ret-chart-container {
+        height: 250px;
+      }
+    }
+
     @media (min-width: 641px) {
       .summary-grid {
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .ret-grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .ret-grid-layout {
+        gap: 1.5rem;
+      }
+
+      .ret-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ret-grid-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .ret-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ret-account-fields {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1241,6 +1585,36 @@
         font-size: 0.7rem;
         margin-top: 0.5rem;
       }
+
+      .retirement-form-group {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field label:hover::after {
+        width: 100px;
+      }
+
+      .retirement-accounts-table {
+        font-size: 0.75rem;
+      }
+
+      .retirement-accounts-table th,
+      .retirement-accounts-table td {
+        padding: 0.5rem 0.3rem;
+      }
+
+      .account-actions {
+        gap: 0.2rem;
+      }
+
+      .horizon-list {
+        max-height: 200px;
+      }
+
+      .horizon-row-item {
+        min-width: 60px;
+        padding: 0.6rem;
+      }
     }
 
     @media (max-width: 380px) {
@@ -1300,6 +1674,20 @@
           insurance: { items: [{ label: '', value: 0, frequency: 'monthly' }], isCustom: false },
           other: { items: [{ label: '', value: 0, frequency: 'monthly' }], isCustom: false },
         };
+        this.retirementAccounts = [
+          { id: 'ret-1', name: 'IRA', type: 'post', balance: 0, inflow: 0, ratePre: 7, ratePost: 4 },
+          { id: 'ret-2', name: '401k', type: 'pre', balance: 0, inflow: 0, ratePre: 6.5, ratePost: 3.5 },
+          { id: 'ret-3', name: 'HSA', type: 'pre', balance: 0, inflow: 0, ratePre: 5, ratePost: 3 },
+          { id: 'ret-4', name: 'Cash', type: 'post', balance: 0, inflow: 0, ratePre: 4, ratePost: 4 },
+        ];
+        this.retirementInputs = {
+          birthdate: '1992-06-15',
+          targetRetirementAge: 65,
+          annualPostRetireSpend: 0,
+          estimatedTaxRate: 22,
+        };
+        this.retirementHorizonMax = 100;
+        this.activeRetirementView = 'mix';
         this.demoMode = false;
         this.savedState = null;
         this.categoryLabels = {
@@ -1338,6 +1726,12 @@
           insurance: { items: [{ label: 'Auto Insurance', value: 145, frequency: 'monthly' }, { label: 'Renters Insurance', value: 20, frequency: 'monthly' }], isCustom: false },
           other: { items: [{ label: 'Gym Membership', value: 50, frequency: 'monthly' }, { label: 'Dining Out', value: 200, frequency: 'monthly' }], isCustom: false },
         };
+        this.demoRetirementData = [
+          { id: 'ret-1', name: 'IRA', type: 'post', balance: 52000, inflow: 3500, ratePre: 7, ratePost: 4 },
+          { id: 'ret-2', name: '401k', type: 'pre', balance: 165000, inflow: 8000, ratePre: 6.5, ratePost: 3.5 },
+          { id: 'ret-3', name: 'HSA', type: 'pre', balance: 11500, inflow: 1800, ratePre: 5, ratePost: 3 },
+          { id: 'ret-4', name: 'Cash', type: 'post', balance: 48000, inflow: 3000, ratePre: 4, ratePost: 4 },
+        ];
         this.frequencyMultipliers = {
           daily: 30,
           weekly: 4.286,
@@ -1347,6 +1741,7 @@
         };
         this.showPercentageToggle = false;
         this.nextCustomCategoryId = 11;
+        this.nextRetirementAccountId = 5;
         this.timeScaleRefreshChart = null;
         this.currentInterval = 'monthly';
         this.activeExpandedCategoryId = null;
@@ -1355,113 +1750,281 @@
 
       init() {
         this.applyTheme();
-        this.render();
+        this.renderHeaderAndTabs();
+        this.renderTabContent();
         this.attachModeToggleListener();
         this.attachTripleTapListener();
       }
 
-      attachTripleTapListener() {
-        const headerTitle = document.querySelector('.header-content h1');
-        if (!headerTitle) return;
+      renderHeaderAndTabs() {
+        const root = document.getElementById('root');
+        const headerHTML = `
+          <div class="container" style="flex: 0 0 auto; padding-bottom: 0;">
+            <div class="header">
+              <div class="header-content">
+                <h1>Earnings & Spending</h1>
+                <p>Track your income and spending</p>
+              </div>
+              <button class="mode-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
+                ${this.darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
 
-        // Remove all previous handlers
-        if (headerTitle._tripleClickHandler) {
-          headerTitle.removeEventListener('click', headerTitle._tripleClickHandler);
-        }
-        if (headerTitle._tripleTouchHandler) {
-          headerTitle.removeEventListener('touchend', headerTitle._tripleTouchHandler);
-        }
-
-        let tapCount = 0;
-        let tapTimer = null;
-
-        const triggerDemo = () => {
-          if (this.demoMode) {
-            this.exitDemoMode();
-          } else {
-            this.promptDemoMode();
-          }
-        };
-
-        if (this.isTouchDevice) {
-          // Use touchend to intercept before browser zoom logic
-          headerTitle._tripleTouchHandler = (e) => {
-            e.preventDefault();
-            tapCount++;
-
-            if (tapTimer) clearTimeout(tapTimer);
-
-            if (tapCount >= 3) {
-              tapCount = 0;
-              triggerDemo();
-            } else {
-              tapTimer = setTimeout(() => { tapCount = 0; }, 500);
-            }
-          };
-          headerTitle.addEventListener('touchend', headerTitle._tripleTouchHandler, { passive: false });
-        } else {
-          // Desktop: click-based, 600ms window to accommodate triple-click timing
-          headerTitle._tripleClickHandler = () => {
-            tapCount++;
-
-            if (tapTimer) clearTimeout(tapTimer);
-
-            if (tapCount >= 3) {
-              tapCount = 0;
-              triggerDemo();
-            } else {
-              tapTimer = setTimeout(() => { tapCount = 0; }, 600);
-            }
-          };
-          headerTitle.addEventListener('click', headerTitle._tripleClickHandler);
-        }
-      }
-
-      promptDemoMode() {
-        const result = confirm('Enter demo mode to explore spending features with sample data?');
-        if (result) {
-          this.enterDemoMode();
-        }
-      }
-
-      enterDemoMode() {
-        this.demoMode = true;
-        this.savedState = {
-          activeTab: this.activeTab,
-          paystubs: JSON.parse(JSON.stringify(this.paystubs)),
-          spendingCategories: JSON.parse(JSON.stringify(this.spendingCategories)),
-          nextCustomCategoryId: this.nextCustomCategoryId,
-          showPercentageToggle: this.showPercentageToggle,
-          activeExpandedCategoryId: this.activeExpandedCategoryId,
-        };
-
-        this.spendingCategories = JSON.parse(JSON.stringify(this.demoDemoData));
-        this.activeTab = 'spending';
-        this.nextCustomCategoryId = 11;
-        this.showPercentageToggle = false;
-        this.activeExpandedCategoryId = null;
-
-        this.render();
-        this.attachModeToggleListener();
-        this.attachTripleTapListener();
-      }
-
-      exitDemoMode() {
-        this.demoMode = false;
+            <div class="tab-nav" role="tablist">
+              <button class="tab-btn ${this.activeTab === 'paycheck' ? 'active' : ''}" data-tab="paycheck" role="tab" aria-selected="${this.activeTab === 'paycheck'}">
+                Paycheck
+              </button>
+              <button class="tab-btn ${this.activeTab === 'spending' ? 'active' : ''}" data-tab="spending" role="tab" aria-selected="${this.activeTab === 'spending'}">
+                Spending
+              </button>
+              <button class="tab-btn ${this.activeTab === 'retirement' ? 'active' : ''}" data-tab="retirement" role="tab" aria-selected="${this.activeTab === 'retirement'}">
+                Retirement
+              </button>
+            </div>
+          </div>
+        `;
         
-        if (this.savedState) {
-          this.activeTab = this.savedState.activeTab;
-          this.paystubs = JSON.parse(JSON.stringify(this.savedState.paystubs));
-          this.spendingCategories = JSON.parse(JSON.stringify(this.savedState.spendingCategories));
-          this.nextCustomCategoryId = this.savedState.nextCustomCategoryId;
-          this.showPercentageToggle = this.savedState.showPercentageToggle;
-          this.activeExpandedCategoryId = this.savedState.activeExpandedCategoryId;
-          this.savedState = null;
+        let existingHeader = root.querySelector('.header');
+        if (existingHeader) {
+          existingHeader.parentElement.parentElement.replaceChild(
+            new DOMParser().parseFromString(headerHTML, 'text/html').body.firstChild,
+            existingHeader.parentElement
+          );
+        } else {
+          const headerDiv = new DOMParser().parseFromString(headerHTML, 'text/html').body.firstChild;
+          root.insertBefore(headerDiv, root.firstChild);
         }
 
-        this.render();
-        this.attachModeToggleListener();
-        this.attachTripleTapListener();
+        this.attachTabListeners();
+      }
+
+      renderTabContent() {
+        const root = document.getElementById('root');
+        let contentHTML = '';
+
+        if (this.activeTab === 'paycheck') {
+          contentHTML = this.renderPaycheckTab();
+        } else if (this.activeTab === 'spending') {
+          contentHTML = this.renderSpendingTab();
+        } else if (this.activeTab === 'retirement') {
+          contentHTML = this.renderRetirementTab();
+        }
+
+        const tabContentDiv = document.createElement('div');
+        tabContentDiv.className = 'tab-content active';
+        tabContentDiv.innerHTML = contentHTML;
+        
+        const existingContent = root.querySelector('.tab-content');
+        if (existingContent) {
+          existingContent.replaceWith(tabContentDiv);
+        } else {
+          root.appendChild(tabContentDiv);
+        }
+
+        this.attachEventListeners();
+        if (this.activeTab === 'spending') {
+          setTimeout(() => this.initChart(), 100);
+        } else if (this.activeTab === 'retirement') {
+          setTimeout(() => this.renderRetirementChart(), 100);
+        }
+      }
+
+      renderPaycheckTab() {
+        const paycheck = this.getPaycheckTotals();
+        const hasPaystubData = this.paystubs.length > 0 && paycheck.totals.grossPay > 0;
+
+        let html = `<div class="container">`;
+        html += `
+          <div class="upload-zone" role="button" tabindex="0">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Add a pay stub</div>
+            <div class="upload-subtext">Photo or file - Auto-extracts data</div>
+            <input type="file" accept="image/*" capture="environment" aria-label="Upload pay stub image">
+          </div>
+        `;
+
+        this.paystubs.forEach((stub, index) => {
+          if (stub.image) {
+            html += `<img src="${stub.image}" alt="Pay stub ${index + 1}" class="preview-img">`;
+          }
+        });
+
+        if (hasPaystubData) {
+          html += this.renderPaycheckCardsHTML(paycheck);
+        } else {
+          html += `
+            <div class="empty-state">
+              <div class="empty-state-icon">📊</div>
+              <div class="empty-state-text">Add your pay stub to get started</div>
+            </div>
+          `;
+        }
+        html += '</div>';
+        return html;
+      }
+
+      renderSpendingTab() {
+        const totalSpending = this.getSpendingTotals();
+        const paycheck = this.getPaycheckTotals();
+        const hasPaystubData = this.paystubs.length > 0 && paycheck.totals.grossPay > 0;
+        const disposable = paycheck.biMonthlyPaycheck - totalSpending;
+
+        let html = `<div class="container">`;
+        html += `<div class="spending-controls">
+          <button class="sort-btn" title="Sort categories by spending percentage" aria-label="Sort by weight">
+            <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </button>
+        </div>`;
+
+        html += `<div class="spending-categories-wrapper">`;
+        Object.entries(this.spendingCategories).forEach(([categoryKey, category]) => {
+          if (categoryKey === 'other') return;
+          html += this.renderSpendingCategoryHTML(categoryKey, category);
+        });
+
+        html += this.renderSpendingCategoryHTML('other', this.spendingCategories.other);
+        html += `</div>`;
+        html += `<div style="height: 10px;"></div>`;
+        html += `<button class="add-category-btn" title="Add new spending category" aria-label="Add new spending category">+</button>`;
+        html += `<div style="height: 20px;"></div>`;
+
+        html += this.renderAggregatedSpendingCardHTML(totalSpending);
+
+        if (hasPaystubData) {
+          html += `
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0;">
+                <span style="font-size: 0.85rem; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;">Total spending</span>
+                <span style="font-family: 'Roboto', sans-serif; font-weight: 600; color: var(--text-primary);">${this.formatCurrency(totalSpending)}</span>
+              </div>
+              <div class="total-row">
+                <span class="total-label">Disposable</span>
+                <span class="total-amount ${disposable >= 0 ? 'positive' : 'negative'}">
+                  ${this.formatCurrency(disposable)}
+                </span>
+              </div>
+            </div>
+          `;
+        }
+
+        html += '</div>';
+        return html;
+      }
+
+      renderRetirementTab() {
+        let html = `
+          <div class="container">
+            <div class="ret-grid-layout">
+              <div class="ret-left-section">
+                <div class="card">
+                  <div class="card-title">Your Timeline & Parameters</div>
+                  <div class="ret-form-grid">
+                    <div class="ret-field-block">
+                      <label class="ret-label" title="We use this to figure out how old you are today">Date of Birth</label>
+                      <input type="date" id="ret-birthdate" class="ret-input" value="${this.retirementInputs.birthdate}" onchange="dashboard.updateRetirementInputs()">
+                    </div>
+                    <div class="ret-field-block">
+                      <label class="ret-label" title="The age when you want to stop working">Target Retirement Age</label>
+                      <input type="number" id="ret-age" class="ret-input" value="${this.retirementInputs.targetRetirementAge}" min="18" max="100" onchange="dashboard.updateRetirementInputs()">
+                    </div>
+                    <div class="ret-field-block">
+                      <label class="ret-label" title="What portion of your money goes to taxes. Like if you earn \$100 and pay \$22 in taxes, that's 22%">Estimated Tax Rate (%)</label>
+                      <input type="number" id="ret-tax" class="ret-input" value="${this.retirementInputs.estimatedTaxRate}" min="0" max="90" step="0.5" onchange="dashboard.updateRetirementInputs()">
+                    </div>
+                    <div class="ret-field-block" style="grid-column: 1 / -1;">
+                      <label class="ret-label" title="How much money you'll need each year after you stop working">Annual Spending in Retirement</label>
+                      <input type="number" id="ret-spend" class="ret-input" value="${this.retirementInputs.annualPostRetireSpend}" min="0" step="1000" onchange="dashboard.updateRetirementInputs()">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="ret-section-header">
+                    <h3>Asset Vehicles</h3>
+                    <button class="ret-add-btn" onclick="dashboard.addRetirementAccount()" title="Add new asset vehicle">+ Add Category</button>
+                  </div>
+                  <div id="ret-accounts-container" class="ret-accounts-list">
+                    ${this.renderRetirementAccountsCards()}
+                  </div>
+                </div>
+              </div>
+
+              <div class="ret-right-section">
+                <div class="card">
+                  <div class="card-title">Normalized Valuation</div>
+                  <div class="ret-metrics-stack">
+                    <div class="ret-metric-tile ret-metric-primary">
+                      <span class="ret-metric-label">Total Net Worth</span>
+                      <span class="ret-metric-value" id="ret-calc-net-worth">\$0</span>
+                    </div>
+                    <div class="ret-metric-tile">
+                      <span class="ret-metric-label">Pre-Tax Equivalent</span>
+                      <span class="ret-metric-value" id="ret-calc-pre-tax">\$0</span>
+                    </div>
+                    <div class="ret-metric-tile">
+                      <span class="ret-metric-label">Post-Tax Equivalent</span>
+                      <span class="ret-metric-value" id="ret-calc-post-tax">\$0</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-title">Horizon to Age 100</div>
+                  <div class="ret-chart-controls">
+                    <button class="ret-chart-btn active" onclick="dashboard.switchRetirementView('mix', this)">Mixed</button>
+                    <button class="ret-chart-btn" onclick="dashboard.switchRetirementView('pre', this)">Pre-Tax View</button>
+                    <button class="ret-chart-btn" onclick="dashboard.switchRetirementView('post', this)">Post-Tax View</button>
+                  </div>
+                  <div class="ret-chart-container">
+                    <canvas id="retirementHorizonChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        return html;
+      }
+
+      renderRetirementAccountsCards() {
+        return this.retirementAccounts.map((acc) => `
+          <div class="ret-account-row" data-account-id="${acc.id}">
+            <div class="ret-account-header">
+              <input type="text" class="ret-account-title" value="${this.escapeHtml(acc.name)}" placeholder="Account Name" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+              <button class="ret-remove-btn" onclick="dashboard.deleteRetirementAccount('${acc.id}')" title="Remove account">&times;</button>
+            </div>
+            <div class="ret-account-fields">
+              <div class="ret-field-block">
+                <label class="ret-label" title="Money you'll pay taxes on when you withdraw it">Structure</label>
+                <select class="ret-input" style="width: 100%;" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+                  <option value="pre" ${acc.type === 'pre' ? 'selected' : ''}>Pre-Tax</option>
+                  <option value="post" ${acc.type === 'post' ? 'selected' : ''}>Post-Tax</option>
+                </select>
+              </div>
+              <div class="ret-field-block">
+                <label class="ret-label" title="How much money you have in this account right now">Current Value</label>
+                <input type="number" class="ret-input" value="${acc.balance}" min="0" step="100" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+              </div>
+              <div class="ret-field-block">
+                <label class="ret-label" title="How much you add to this account each year">Annual Flow (\$)</label>
+                <input type="number" class="ret-input" value="${acc.inflow}" min="0" step="50" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+              </div>
+            </div>
+            <div class="ret-account-fields">
+              <div class="ret-field-block">
+                <label class="ret-label" title="How fast your money grows before retirement">Growth Phase (%)</label>
+                <input type="number" class="ret-input" value="${acc.ratePre}" min="0" max="30" step="0.1" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+              </div>
+              <div class="ret-field-block">
+                <label class="ret-label" title="How fast your money grows after you stop working">Wind-Down Phase (%)</label>
+                <input type="number" class="ret-input" value="${acc.ratePost}" min="0" max="30" step="0.1" onchange="dashboard.updateRetirementAccount('${acc.id}')">
+              </div>
+            </div>
+          </div>
+        `).join('');
       }
 
       applyTheme() {
@@ -1483,6 +2046,132 @@
           };
           modeToggle.addEventListener('click', this.modeToggleHandler);
         }
+      }
+
+      attachTabListeners() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(btn => {
+          btn.removeEventListener('click', btn.clickHandler);
+          btn.clickHandler = (e) => {
+            this.activeTab = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            this.renderTabContent();
+            this.attachModeToggleListener();
+            this.attachTripleTapListener();
+          };
+          btn.addEventListener('click', btn.clickHandler);
+        });
+      }
+
+      attachTripleTapListener() {
+        const headerTitle = document.querySelector('.header-content h1');
+        if (!headerTitle) return;
+
+        if (headerTitle._tripleClickHandler) {
+          headerTitle.removeEventListener('click', headerTitle._tripleClickHandler);
+        }
+        if (headerTitle._tripleTouchHandler) {
+          headerTitle.removeEventListener('touchend', headerTitle._tripleTouchHandler);
+        }
+
+        let tapCount = 0;
+        let tapTimer = null;
+
+        const triggerDemo = () => {
+          if (this.demoMode) {
+            this.exitDemoMode();
+          } else {
+            this.promptDemoMode();
+          }
+        };
+
+        if (this.isTouchDevice) {
+          headerTitle._tripleTouchHandler = (e) => {
+            e.preventDefault();
+            tapCount++;
+
+            if (tapTimer) clearTimeout(tapTimer);
+
+            if (tapCount >= 3) {
+              tapCount = 0;
+              triggerDemo();
+            } else {
+              tapTimer = setTimeout(() => { tapCount = 0; }, 500);
+            }
+          };
+          headerTitle.addEventListener('touchend', headerTitle._tripleTouchHandler, { passive: false });
+        } else {
+          headerTitle._tripleClickHandler = () => {
+            tapCount++;
+
+            if (tapTimer) clearTimeout(tapTimer);
+
+            if (tapCount >= 3) {
+              tapCount = 0;
+              triggerDemo();
+            } else {
+              tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+            }
+          };
+          headerTitle.addEventListener('click', headerTitle._tripleClickHandler);
+        }
+      }
+
+      promptDemoMode() {
+        const result = confirm('Enter demo mode to explore features with sample data?');
+        if (result) {
+          this.enterDemoMode();
+        }
+      }
+
+      enterDemoMode() {
+        this.demoMode = true;
+        this.savedState = {
+          activeTab: this.activeTab,
+          paystubs: JSON.parse(JSON.stringify(this.paystubs)),
+          spendingCategories: JSON.parse(JSON.stringify(this.spendingCategories)),
+          retirementAccounts: JSON.parse(JSON.stringify(this.retirementAccounts)),
+          retirementInputs: JSON.parse(JSON.stringify(this.retirementInputs)),
+        };
+
+        if (this.activeTab === 'paycheck') {
+          this.activeTab = 'spending';
+          this.spendingCategories = JSON.parse(JSON.stringify(this.demoDemoData));
+        } else if (this.activeTab === 'spending') {
+          this.spendingCategories = JSON.parse(JSON.stringify(this.demoDemoData));
+        } else if (this.activeTab === 'retirement') {
+          this.retirementAccounts = JSON.parse(JSON.stringify(this.demoRetirementData));
+          this.retirementInputs = {
+            birthdate: '1992-06-15',
+            targetRetirementAge: 65,
+            annualPostRetireSpend: 75000,
+            estimatedTaxRate: 22,
+          };
+        }
+
+        this.renderHeaderAndTabs();
+        this.renderTabContent();
+        this.attachModeToggleListener();
+        this.attachTripleTapListener();
+      }
+
+      exitDemoMode() {
+        this.demoMode = false;
+        
+        if (this.savedState) {
+          this.activeTab = this.savedState.activeTab;
+          this.paystubs = JSON.parse(JSON.stringify(this.savedState.paystubs));
+          this.spendingCategories = JSON.parse(JSON.stringify(this.savedState.spendingCategories));
+          this.retirementAccounts = JSON.parse(JSON.stringify(this.savedState.retirementAccounts));
+          this.retirementInputs = JSON.parse(JSON.stringify(this.savedState.retirementInputs));
+          this.savedState = null;
+        }
+
+        this.renderHeaderAndTabs();
+        this.renderTabContent();
+        this.attachModeToggleListener();
+        this.attachTripleTapListener();
       }
 
       formatCurrency(value) {
@@ -1517,6 +2206,71 @@
         return totalSpending;
       }
 
+      getRetirementCurrentAge() {
+        const birthdate = new Date(this.retirementInputs.birthdate);
+        const today = new Date();
+        let age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+          age--;
+        }
+        return Math.max(0, age);
+      }
+
+      getRetirementTotals() {
+        let totalNominal = 0;
+        let totalPreTax = 0;
+        let totalPostTax = 0;
+        const taxRate = this.retirementInputs.estimatedTaxRate / 100;
+
+        this.retirementAccounts.forEach(acc => {
+          totalNominal += acc.balance;
+          if (acc.type === 'pre') {
+            totalPreTax += acc.balance;
+            totalPostTax += acc.balance * (1 - taxRate);
+          } else {
+            totalPreTax += acc.balance / (1 - taxRate);
+            totalPostTax += acc.balance;
+          }
+        });
+
+        return { totalNominal, totalPreTax, totalPostTax };
+      }
+
+      getRetirementProjections(startAge, endAge) {
+        const projections = [];
+        const targetRetireAge = this.retirementInputs.targetRetirementAge;
+        const annualSpend = this.retirementInputs.annualPostRetireSpend;
+
+        let accountsCopy = JSON.parse(JSON.stringify(this.retirementAccounts));
+
+        for (let age = startAge; age <= endAge; age++) {
+          let yearValue = 0;
+          const isRetired = age >= targetRetireAge;
+
+          accountsCopy.forEach(acc => {
+            yearValue += acc.balance;
+          });
+
+          projections.push({ age, value: Math.max(0, yearValue) });
+
+          accountsCopy.forEach(acc => {
+            const rate = isRetired ? acc.ratePost / 100 : acc.ratePre / 100;
+            acc.balance = acc.balance * (1 + rate);
+
+            if (!isRetired) {
+              acc.balance += acc.inflow;
+            } else if (yearValue > 0) {
+              const proportion = acc.balance / yearValue;
+              acc.balance -= annualSpend * proportion;
+              if (acc.balance < 0) acc.balance = 0;
+            }
+          });
+        }
+
+        return projections;
+      }
+
       toggleMode() {
         this.darkMode = !this.darkMode;
         this.applyTheme();
@@ -1527,6 +2281,161 @@
         if (this.timeScaleRefreshChart) {
           this.timeScaleRefreshChart.update('none');
         }
+      }
+
+      updateRetirementInputs() {
+        this.retirementInputs.birthdate = document.getElementById('ret-birthdate').value;
+        this.retirementInputs.targetRetirementAge = parseInt(document.getElementById('ret-age').value) || 65;
+        this.retirementInputs.annualPostRetireSpend = parseFloat(document.getElementById('ret-spend').value) || 0;
+        this.retirementInputs.estimatedTaxRate = parseFloat(document.getElementById('ret-tax').value) || 22;
+        
+        this.updateRetirementDisplay();
+      }
+
+      updateRetirementAccount(accountId) {
+        const row = document.querySelector(`[data-account-id="${accountId}"]`);
+        if (!row) return;
+
+        const account = this.retirementAccounts.find(a => a.id === accountId);
+        if (!account) return;
+
+        account.name = row.querySelector('.ret-account-title').value;
+        account.type = row.querySelector('select').value;
+        const inputs = row.querySelectorAll('input[type="number"]');
+        account.balance = parseFloat(inputs[0].value) || 0;
+        account.inflow = parseFloat(inputs[1].value) || 0;
+        account.ratePre = parseFloat(inputs[2].value) || 0;
+        account.ratePost = parseFloat(inputs[3].value) || 0;
+
+        this.updateRetirementDisplay();
+      }
+
+      updateRetirementDisplay() {
+        const totals = this.getRetirementTotals();
+        document.getElementById('ret-calc-net-worth').textContent = this.formatCurrency(totals.totalNominal);
+        document.getElementById('ret-calc-pre-tax').textContent = this.formatCurrency(totals.totalPreTax);
+        document.getElementById('ret-calc-post-tax').textContent = this.formatCurrency(totals.totalPostTax);
+        
+        this.renderRetirementChart();
+      }
+
+      addRetirementAccount() {
+        const newId = 'ret-' + (++this.nextRetirementAccountId);
+        this.retirementAccounts.push({
+          id: newId,
+          name: 'New Account',
+          type: 'post',
+          balance: 0,
+          inflow: 0,
+          ratePre: 6,
+          ratePost: 4,
+        });
+        const container = document.getElementById('ret-accounts-container');
+        if (container) {
+          container.innerHTML = this.renderRetirementAccountsCards();
+        }
+      }
+
+      deleteRetirementAccount(accountId) {
+        const idx = this.retirementAccounts.findIndex(a => a.id === accountId);
+        if (idx >= 0) {
+          this.retirementAccounts.splice(idx, 1);
+          const container = document.getElementById('ret-accounts-container');
+          if (container) {
+            container.innerHTML = this.renderRetirementAccountsCards();
+          }
+        }
+        this.updateRetirementDisplay();
+      }
+
+      switchRetirementView(viewMode, buttonElement) {
+        this.activeRetirementView = viewMode;
+        document.querySelectorAll('.ret-chart-btn').forEach(btn => btn.classList.remove('active'));
+        buttonElement.classList.add('active');
+        this.renderRetirementChart();
+      }
+
+      renderRetirementChart() {
+        const currentAge = this.getRetirementCurrentAge();
+        const targetAge = this.retirementInputs.targetRetirementAge;
+        const projections = this.getRetirementProjections(currentAge, 100);
+        
+        const labels = projections.map(p => `Age ${p.age}`);
+        const data = projections.map(p => p.value);
+        
+        const ctx = document.getElementById('retirementHorizonChart');
+        if (!ctx) return;
+
+        const style = getComputedStyle(document.documentElement);
+        const primaryColor = style.getPropertyValue('--primary').trim();
+        const mutedColor = style.getPropertyValue('--text-secondary').trim();
+        const gridColor = style.getPropertyValue('--border').trim();
+
+        if (this.retirementChart) {
+          this.retirementChart.destroy();
+        }
+
+        this.retirementChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Net Worth',
+              data: data,
+              borderColor: primaryColor,
+              borderWidth: 2.5,
+              pointBackgroundColor: primaryColor,
+              pointHoverRadius: 6,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              annotation: {
+                annotations: {
+                  retirementLine: {
+                    type: 'line',
+                    xMin: targetAge,
+                    xMax: targetAge,
+                    borderColor: 'rgb(255, 0, 0)',
+                    borderWidth: 1
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  color: mutedColor,
+                  font: { family: 'Plus Jakarta Sans', size: 10 },
+                  maxTicksLimit: 8
+                }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: {
+                  color: mutedColor,
+                  font: { family: 'Plus Jakarta Sans', size: 10 },
+                  callback: function(value) {
+                    if (value >= 1e6) return '$' + (value / 1e6).toFixed(1) + 'M';
+                    if (value >= 1e3) return '$' + (value / 1e3).toFixed(0) + 'k';
+                    return '$' + value;
+                  }
+                }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            }
+          }
+        });
       }
 
       updateBreakdownValues() {
@@ -1550,18 +2459,16 @@
       }
 
       attachEventListeners() {
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(btn => {
-          btn.removeEventListener('click', btn.clickHandler);
-          btn.clickHandler = (e) => {
-            this.activeTab = e.target.getAttribute('data-tab');
-            this.render();
-            this.attachModeToggleListener();
-            this.attachTripleTapListener();
-          };
-          btn.addEventListener('click', btn.clickHandler);
-        });
+        if (this.activeTab === 'paycheck') {
+          this.attachPaycheckListeners();
+        } else if (this.activeTab === 'spending') {
+          this.attachSpendingListeners();
+        } else if (this.activeTab === 'retirement') {
+          this.attachRetirementListeners();
+        }
+      }
 
+      attachPaycheckListeners() {
         const uploadZone = document.querySelector('.upload-zone');
         if (uploadZone) {
           uploadZone.removeEventListener('click', uploadZone.clickHandler);
@@ -1578,12 +2485,195 @@
           fileInput.changeHandler = (e) => this.handleImageCapture(e);
           fileInput.addEventListener('change', fileInput.changeHandler);
         }
+      }
 
+      attachSpendingListeners() {
         this.attachCategoryEventListeners();
         this.attachAddCategoryButton();
         this.attachSortButton();
         this.attachPercentageToggle();
         this.attachBreakdownItemListeners();
+      }
+
+      attachRetirementListeners() {
+        // Event listeners attached via inline onclick
+      }
+
+      attachCategoryEventListeners() {
+        Object.keys(this.spendingCategories).forEach(categoryKey => {
+          const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
+          if (!categoryEl) return;
+
+          const addBtn = categoryEl.querySelector('.add-btn');
+          if (addBtn) {
+            addBtn.removeEventListener('click', addBtn.clickHandler);
+            addBtn.clickHandler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this.addSubcategoryItem(categoryKey);
+            };
+            addBtn.addEventListener('click', addBtn.clickHandler);
+          }
+
+          const categoryNameEl = categoryEl.querySelector('.category-name');
+          if (categoryNameEl) {
+            categoryNameEl.removeEventListener('click', categoryNameEl.clickHandler);
+            categoryNameEl.clickHandler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              this.editCategoryName(categoryKey, categoryNameEl);
+            };
+            categoryNameEl.addEventListener('click', categoryNameEl.clickHandler);
+          }
+
+          this.attachInputListeners(categoryKey);
+          this.attachRemoveButtons(categoryKey);
+        });
+      }
+
+      attachInputListeners(categoryKey) {
+        const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
+        if (!categoryEl) return;
+
+        const inputs = categoryEl.querySelectorAll('[data-input-type]');
+        inputs.forEach(input => {
+          input.removeEventListener('focus', input.focusHandler);
+          input.removeEventListener('blur', input.blurHandler);
+          input.removeEventListener('change', input.changeHandler);
+
+          input.focusHandler = (e) => {
+            if (e.target.value === '0' || e.target.value === '0.00') {
+              e.target.value = '';
+            }
+          };
+
+          input.blurHandler = (e) => {
+            const field = e.target.getAttribute('data-field');
+            if (field === 'value' && e.target.value) {
+              const numValue = parseFloat(e.target.value);
+              if (!isNaN(numValue)) {
+                e.target.value = this.roundCurrency(numValue).toFixed(2);
+              }
+            }
+          };
+
+          input.changeHandler = (e) => {
+            const itemIndex = e.target.getAttribute('data-item-index') ? parseInt(e.target.getAttribute('data-item-index')) : 0;
+            const field = e.target.getAttribute('data-field');
+            let value = e.target.value;
+
+            if (field !== 'label' && field !== 'frequency') {
+              value = Number(value) || 0;
+            }
+
+            if (!this.spendingCategories[categoryKey].items[itemIndex]) {
+              this.spendingCategories[categoryKey].items[itemIndex] = { label: '', value: 0, frequency: 'monthly' };
+            }
+            this.spendingCategories[categoryKey].items[itemIndex][field] = value;
+
+            this.updateAllCategoryTotals();
+            this.updateChartData();
+            this.updateBreakdownValues();
+          };
+
+          input.addEventListener('focus', input.focusHandler);
+          input.addEventListener('blur', input.blurHandler);
+          input.addEventListener('change', input.changeHandler);
+          input.addEventListener('input', input.changeHandler);
+        });
+      }
+
+      attachRemoveButtons(categoryKey) {
+        const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
+        if (!categoryEl) return;
+
+        const removeBtns = categoryEl.querySelectorAll('.remove-btn');
+        removeBtns.forEach(btn => {
+          btn.removeEventListener('click', btn.clickHandler);
+          btn.clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const itemIndex = parseInt(e.currentTarget.getAttribute('data-item-index'));
+            this.removeSubcategoryItem(categoryKey, itemIndex);
+          };
+          btn.addEventListener('click', btn.clickHandler);
+        });
+      }
+
+      attachSortButton() {
+        const sortBtn = document.querySelector('.sort-btn');
+        if (sortBtn) {
+          sortBtn.removeEventListener('click', sortBtn.clickHandler);
+          sortBtn.clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.sortCategoriesByPercentage();
+          };
+          sortBtn.addEventListener('click', sortBtn.clickHandler);
+        }
+      }
+
+      sortCategoriesByPercentage() {
+        const totalSpending = this.getSpendingTotals();
+        if (totalSpending === 0) return;
+
+        const categoryArray = Object.entries(this.spendingCategories)
+          .map(([key, category]) => ({
+            key,
+            percentage: (this.getCategoryMonthlyTotal(key) / totalSpending) * 100,
+          }))
+          .sort((a, b) => b.percentage - a.percentage);
+
+        const spendingCategoriesWrapper = document.querySelector('.spending-categories-wrapper');
+        if (!spendingCategoriesWrapper) return;
+
+        const categoryElements = {};
+        categoryArray.forEach(({ key }) => {
+          const categoryEl = document.querySelector(`[data-category-key="${key}"]`);
+          if (categoryEl) {
+            categoryElements[key] = categoryEl.cloneNode(true);
+          }
+        });
+
+        spendingCategoriesWrapper.innerHTML = '';
+        categoryArray.forEach(({ key }) => {
+          if (categoryElements[key]) {
+            spendingCategoriesWrapper.appendChild(categoryElements[key]);
+          }
+        });
+
+        this.attachCategoryEventListeners();
+      }
+
+      attachPercentageToggle() {
+        const categoryTotals = document.querySelectorAll('.category-total');
+        categoryTotals.forEach(total => {
+          total.removeEventListener('dblclick', total.dblclickHandler);
+          total.dblclickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.showPercentageToggle = !this.showPercentageToggle;
+            this.updateAllCategoryTotals();
+          };
+          total.addEventListener('dblclick', total.dblclickHandler);
+
+          if (this.isTouchDevice) {
+            total.removeEventListener('touchend', total.touchendHandler);
+            total.touchendHandler = (e) => {
+              const currentTime = new Date().getTime();
+              const tapLength = currentTime - (total.lastTap || 0);
+              
+              if (tapLength < 300 && tapLength > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showPercentageToggle = !this.showPercentageToggle;
+                this.updateAllCategoryTotals();
+              }
+              total.lastTap = currentTime;
+            };
+            total.addEventListener('touchend', total.touchendHandler);
+          }
+        });
       }
 
       attachBreakdownItemListeners() {
@@ -1672,16 +2762,16 @@
 
       getCategoryColor(index, alpha = 1) {
         const colors = [
-        	'#D98A6C',
-			'#6B8E66',
-			'#E0B063',
-			'#8F9779',
-			'#5A7887',
-			'#A36A75',
-			'#4A5343',
-			'#D1C2A5',
-			'#7D6B7D',
-			'#5C4D43'
+          '#D98A6C',
+          '#6B8E66',
+          '#E0B063',
+          '#8F9779',
+          '#5A7887',
+          '#A36A75',
+          '#4A5343',
+          '#D1C2A5',
+          '#7D6B7D',
+          '#5C4D43'
         ];
         const color = colors[index % colors.length];
         if (alpha < 1) {
@@ -1773,9 +2863,6 @@
                     const idx = tooltipItems[0].dataIndex;
                     const businessModel = this.buildBusinessModel();
                     if (!businessModel[idx]) return '';
-                    if (this.activeExpandedCategoryId === businessModel[idx].parentId) {
-                      return businessModel[idx].parentLabel.toUpperCase();
-                    }
                     return businessModel[idx].parentLabel.toUpperCase();
                   },
                   label: (context) => {
@@ -1802,7 +2889,6 @@
                 }
               }
             },
-            // Desktop only: click to expand/collapse
             onClick: (event, activeElements) => {
               if (this.isTouchDevice) return;
               if (!activeElements || activeElements.length === 0) return;
@@ -1831,10 +2917,6 @@
         });
 
         if (this.isTouchDevice) {
-          // All touch interactions handled manually via touchstart/touchend
-          // Short tap: show tooltip for tapped segment
-          // Long press (500ms): expand/collapse category subcategories
-
           const getElementAtTouch = (touch) => {
             const elements = this.timeScaleRefreshChart.getElementsAtEventForMode(
               touch, 'nearest', { intersect: true }, false
@@ -1843,12 +2925,11 @@
           };
 
           ctx.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // prevent scroll and zoom on canvas
+            e.preventDefault();
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
             longPressFired = false;
 
-            // Clear any existing tooltip on new touch
             this.timeScaleRefreshChart.tooltip.setActiveElements([], {});
             this.timeScaleRefreshChart.update('none');
 
@@ -1886,17 +2967,15 @@
               longPressTimer = null;
             }
 
-            if (longPressFired) return; // long press already handled
+            if (longPressFired) return;
 
-            // Short tap: show tooltip for tapped segment
             const touch = e.changedTouches[0];
             const deltaX = Math.abs(touch.clientX - touchStartX);
             const deltaY = Math.abs(touch.clientY - touchStartY);
-            if (deltaX > 10 || deltaY > 10) return; // moved too much - scroll intent
+            if (deltaX > 10 || deltaY > 10) return;
 
             const element = getElementAtTouch(touch);
             if (!element) {
-              // Tapped outside chart - dismiss tooltip
               this.timeScaleRefreshChart.tooltip.setActiveElements([], {});
               this.timeScaleRefreshChart.update('none');
               return;
@@ -1906,7 +2985,6 @@
             const currentValue = this.timeScaleRefreshChart.data.datasets[0].data[targetElementIdx];
             if (currentValue === 0) return;
 
-            // Show tooltip for this segment
             this.timeScaleRefreshChart.tooltip.setActiveElements(
               [{ datasetIndex: 0, index: targetElementIdx }],
               { x: touch.clientX, y: touch.clientY }
@@ -1925,7 +3003,6 @@
             }
           }, { passive: true });
 
-          // Dismiss tooltip when tapping anywhere outside the chart
           document.addEventListener('touchend', (e) => {
             const chartContainerEl = document.querySelector('.chart-container');
             if (chartContainerEl && !chartContainerEl.contains(e.target)) {
@@ -1938,120 +3015,6 @@
         }
 
         this.updateChartDisplay();
-      }
-
-      attachCategoryEventListeners() {
-        Object.keys(this.spendingCategories).forEach(categoryKey => {
-          const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
-          if (!categoryEl) return;
-
-          const addBtn = categoryEl.querySelector('.add-btn');
-          if (addBtn) {
-            addBtn.removeEventListener('click', addBtn.clickHandler);
-            addBtn.clickHandler = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              this.addSubcategoryItem(categoryKey);
-            };
-            addBtn.addEventListener('click', addBtn.clickHandler);
-          }
-
-          const categoryNameEl = categoryEl.querySelector('.category-name');
-          if (categoryNameEl) {
-            categoryNameEl.removeEventListener('click', categoryNameEl.clickHandler);
-            categoryNameEl.clickHandler = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              this.editCategoryName(categoryKey, categoryNameEl);
-            };
-            categoryNameEl.addEventListener('click', categoryNameEl.clickHandler);
-          }
-
-          this.attachInputListeners(categoryKey);
-          this.attachRemoveButtons(categoryKey);
-        });
-      }
-
-      attachInputListeners(categoryKey) {
-        const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
-        if (!categoryEl) return;
-
-        const inputs = categoryEl.querySelectorAll('[data-input-type]');
-        inputs.forEach(input => {
-          input.removeEventListener('focus', input.focusHandler);
-          input.removeEventListener('blur', input.blurHandler);
-          input.removeEventListener('change', input.changeHandler);
-
-          input.focusHandler = (e) => {
-            if (e.target.value === '0' || e.target.value === '0.00') {
-              e.target.value = '';
-            }
-          };
-
-          input.blurHandler = (e) => {
-            const field = e.target.getAttribute('data-field');
-            if (field === 'value' && e.target.value) {
-              const numValue = parseFloat(e.target.value);
-              if (!isNaN(numValue)) {
-                e.target.value = this.roundCurrency(numValue).toFixed(2);
-              }
-            }
-          };
-
-          input.changeHandler = (e) => {
-            const itemIndex = e.target.getAttribute('data-item-index') ? parseInt(e.target.getAttribute('data-item-index')) : 0;
-            const field = e.target.getAttribute('data-field');
-            let value = e.target.value;
-
-            if (field !== 'label' && field !== 'frequency') {
-              value = Number(value) || 0;
-            }
-
-            if (!this.spendingCategories[categoryKey].items[itemIndex]) {
-              this.spendingCategories[categoryKey].items[itemIndex] = { label: '', value: 0, frequency: 'monthly' };
-            }
-            this.spendingCategories[categoryKey].items[itemIndex][field] = value;
-
-            this.updateAllCategoryTotals();
-            this.updateChartData();
-            this.updateBreakdownValues();
-          };
-
-          input.addEventListener('focus', input.focusHandler);
-          input.addEventListener('blur', input.blurHandler);
-          input.addEventListener('change', input.changeHandler);
-          input.addEventListener('input', input.changeHandler);
-        });
-      }
-
-      updateCategoryTotal(categoryKey) {
-        const categoryElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
-        if (categoryElement) {
-          const total = this.getCategoryMonthlyTotal(categoryKey);
-          const percentage = this.getCategoryPercentage(categoryKey);
-          const tooltipText = `Monthly total (from mixed frequencies) - ${percentage}% of total spending`;
-          const totalDisplay = this.showPercentageToggle
-            ? `${this.formatCurrency(total)} (${percentage}%)`
-            : this.formatCurrency(total);
-          categoryElement.innerHTML = `${totalDisplay}<div class="tooltip">${tooltipText}</div>`;
-        }
-      }
-
-      attachRemoveButtons(categoryKey) {
-        const categoryEl = document.querySelector(`[data-category-key="${categoryKey}"]`);
-        if (!categoryEl) return;
-
-        const removeBtns = categoryEl.querySelectorAll('.remove-btn');
-        removeBtns.forEach(btn => {
-          btn.removeEventListener('click', btn.clickHandler);
-          btn.clickHandler = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const itemIndex = parseInt(e.currentTarget.getAttribute('data-item-index'));
-            this.removeSubcategoryItem(categoryKey, itemIndex);
-          };
-          btn.addEventListener('click', btn.clickHandler);
-        });
       }
 
       editCategoryName(categoryKey, nameEl) {
@@ -2136,86 +3099,23 @@
         }
       }
 
-      attachSortButton() {
-        const sortBtn = document.querySelector('.sort-btn');
-        if (sortBtn) {
-          sortBtn.removeEventListener('click', sortBtn.clickHandler);
-          sortBtn.clickHandler = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.sortCategoriesByPercentage();
-          };
-          sortBtn.addEventListener('click', sortBtn.clickHandler);
-        }
-      }
-
-      sortCategoriesByPercentage() {
-        const totalSpending = this.getSpendingTotals();
-        if (totalSpending === 0) return;
-
-        const categoryArray = Object.entries(this.spendingCategories)
-          .map(([key, category]) => ({
-            key,
-            percentage: (this.getCategoryMonthlyTotal(key) / totalSpending) * 100,
-          }))
-          .sort((a, b) => b.percentage - a.percentage);
-
-        const spendingCategoriesWrapper = document.querySelector('.spending-categories-wrapper');
-        if (!spendingCategoriesWrapper) return;
-
-        const categoryElements = {};
-        categoryArray.forEach(({ key }) => {
-          const categoryEl = document.querySelector(`[data-category-key="${key}"]`);
-          if (categoryEl) {
-            categoryElements[key] = categoryEl.cloneNode(true);
-          }
-        });
-
-        spendingCategoriesWrapper.innerHTML = '';
-        categoryArray.forEach(({ key }) => {
-          if (categoryElements[key]) {
-            spendingCategoriesWrapper.appendChild(categoryElements[key]);
-          }
-        });
-
-        this.attachCategoryEventListeners();
-      }
-
-      attachPercentageToggle() {
-        const categoryTotals = document.querySelectorAll('.category-total');
-        categoryTotals.forEach(total => {
-          total.removeEventListener('dblclick', total.dblclickHandler);
-          total.dblclickHandler = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.showPercentageToggle = !this.showPercentageToggle;
-            this.updateAllCategoryTotals();
-          };
-          total.addEventListener('dblclick', total.dblclickHandler);
-
-          if (this.isTouchDevice) {
-            total.removeEventListener('touchend', total.touchendHandler);
-            total.touchendHandler = (e) => {
-              const currentTime = new Date().getTime();
-              const tapLength = currentTime - (total.lastTap || 0);
-              
-              if (tapLength < 300 && tapLength > 0) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showPercentageToggle = !this.showPercentageToggle;
-                this.updateAllCategoryTotals();
-              }
-              total.lastTap = currentTime;
-            };
-            total.addEventListener('touchend', total.touchendHandler);
-          }
-        });
-      }
-
       updateAllCategoryTotals() {
         Object.keys(this.spendingCategories).forEach(categoryKey => {
           this.updateCategoryTotal(categoryKey);
         });
+      }
+
+      updateCategoryTotal(categoryKey) {
+        const categoryElement = document.querySelector(`[data-category-total="${categoryKey}"]`);
+        if (categoryElement) {
+          const total = this.getCategoryMonthlyTotal(categoryKey);
+          const percentage = this.getCategoryPercentage(categoryKey);
+          const tooltipText = `Monthly total (from mixed frequencies) - ${percentage}% of total spending`;
+          const totalDisplay = this.showPercentageToggle
+            ? `${this.formatCurrency(total)} (${percentage}%)`
+            : this.formatCurrency(total);
+          categoryElement.innerHTML = `${totalDisplay}<div class="tooltip">${tooltipText}</div>`;
+        }
       }
 
       updateChartData() {
@@ -2263,7 +3163,12 @@
                 <option value="monthly" selected>Monthly</option>
                 <option value="yearly">Yearly</option>
               </select>
-              <button class="remove-btn" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">×</button>
+              <button class="remove-btn" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
             </div>
           </div>
         `;
@@ -2719,7 +3624,12 @@
                   <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
                   <option value="yearly" ${item.frequency === 'yearly' ? 'selected' : ''}>Yearly</option>
                 </select>
-                <button class="remove-btn" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">×</button>
+                <button class="remove-btn" data-item-index="${itemIndex}" title="Remove this item" aria-label="Remove">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
               </div>
             </div>
           `;
@@ -2770,121 +3680,11 @@
           </div>
         `;
       }
-
-      render() {
-        const root = document.getElementById('root');
-        const paycheck = this.getPaycheckTotals();
-        const hasPaystubData = this.paystubs.length > 0 && paycheck.totals.grossPay > 0;
-        const totalSpending = this.getSpendingTotals();
-        const disposable = paycheck.biMonthlyPaycheck - totalSpending;
-
-        let html = `
-          <div class="container">
-            <div class="header">
-              <div class="header-content">
-                <h1>Earnings & Spending</h1>
-                <p>Track your income and spending</p>
-              </div>
-              <button class="mode-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
-                ${this.darkMode ? '☀️' : '🌙'}
-              </button>
-            </div>
-
-            <div class="tab-nav" role="tablist">
-              <button class="tab-btn ${this.activeTab === 'paycheck' ? 'active' : ''}" data-tab="paycheck" role="tab" aria-selected="${this.activeTab === 'paycheck'}">
-                Paycheck
-              </button>
-              <button class="tab-btn ${this.activeTab === 'spending' ? 'active' : ''}" data-tab="spending" role="tab" aria-selected="${this.activeTab === 'spending'}">
-                Spending
-              </button>
-            </div>
-        `;
-
-        if (this.activeTab === 'paycheck') {
-          html += `<div class="tab-content active" role="tabpanel">`;
-          html += `
-            <div class="upload-zone" role="button" tabindex="0">
-              <div class="upload-icon">📄</div>
-              <div class="upload-text">Add a pay stub</div>
-              <div class="upload-subtext">Photo or file - Auto-extracts data</div>
-              <input type="file" accept="image/*" capture="environment" aria-label="Upload pay stub image">
-            </div>
-          `;
-
-          this.paystubs.forEach((stub, index) => {
-            if (stub.image) {
-              html += `<img src="${stub.image}" alt="Pay stub ${index + 1}" class="preview-img">`;
-            }
-          });
-
-          if (hasPaystubData) {
-            html += this.renderPaycheckCardsHTML(paycheck);
-          } else {
-            html += `
-              <div class="empty-state">
-                <div class="empty-state-icon">📊</div>
-                <div class="empty-state-text">Add your pay stub to get started</div>
-              </div>
-            `;
-          }
-          html += '</div>';
-        } else {
-          html += `<div class="tab-content active" role="tabpanel">`;
-
-          html += `<div class="spending-controls">
-            <button class="sort-btn" title="Sort categories by spending percentage" aria-label="Sort by weight">
-              <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <polyline points="19 12 12 19 5 12"></polyline>
-              </svg>
-            </button>
-          </div>`;
-
-          html += `<div class="spending-categories-wrapper">`;
-          Object.entries(this.spendingCategories).forEach(([categoryKey, category]) => {
-            if (categoryKey === 'other') return;
-            html += this.renderSpendingCategoryHTML(categoryKey, category);
-          });
-
-          html += this.renderSpendingCategoryHTML('other', this.spendingCategories.other);
-          html += `</div>`;
-          html += `<div style="height: 10px;"></div>`;
-          html += `<button class="add-category-btn" title="Add new spending category" aria-label="Add new spending category">+</button>`;
-          html += `<div style="height: 20px;"></div>`;
-
-          html += this.renderAggregatedSpendingCardHTML(totalSpending);
-
-          if (hasPaystubData) {
-            html += `
-              <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0;">
-                  <span style="font-size: 0.85rem; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;">Total spending</span>
-                  <span style="font-family: 'Roboto', sans-serif; font-weight: 600; color: var(--text-primary);">${this.formatCurrency(totalSpending)}</span>
-                </div>
-                <div class="total-row">
-                  <span class="total-label">Disposable</span>
-                  <span class="total-amount ${disposable >= 0 ? 'positive' : 'negative'}">
-                    ${this.formatCurrency(disposable)}
-                  </span>
-                </div>
-              </div>
-            `;
-          }
-
-          html += '</div>';
-        }
-
-        html += '</div>';
-        root.innerHTML = html;
-        this.attachEventListeners();
-        if (this.activeTab === 'spending') {
-          setTimeout(() => this.initChart(), 100);
-        }
-      }
     }
 
+    let dashboard;
     document.addEventListener('DOMContentLoaded', () => {
-      new FinancialDashboard();
+      dashboard = new FinancialDashboard();
     });
   </script>
 </body>
