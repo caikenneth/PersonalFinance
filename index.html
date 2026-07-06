@@ -946,11 +946,12 @@
       background: none;
       border: none;
       color: var(--bg-elevated);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 400;
       line-height: 1;
       opacity: 0.75;
-      padding: 0 0.05rem;
+      padding: 0;
+      margin-top: -1px;
       font-family: inherit;
     }
 
@@ -2169,8 +2170,8 @@
     /* Line items inside a section */
     .pc-line {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 110px 52px;
-      gap: 0.4rem;
+      grid-template-columns: minmax(0, 1fr) 105px 80px;
+      gap: 0.5rem;
       align-items: center;
       padding: 0.25rem 0;
       transition: opacity 0.2s;
@@ -2180,7 +2181,7 @@
     .pc-line.item-hidden { opacity: 0.45; }
     .pc-line.item-hidden .subcategory-input { pointer-events: none; }
 
-    .pc-line-actions { display: flex; align-items: center; gap: 0.1rem; justify-self: end; }
+    .pc-line-actions { display: flex; align-items: center; gap: 0.25rem; justify-self: end; }
 
     /* Drag handle */
     .pc-drag-handle {
@@ -2370,7 +2371,7 @@
     @media (max-width: 640px) {
       .pc-layout { gap: 1.5rem; }
       .pc-timescale-bar { grid-template-columns: repeat(3, 1fr); }
-      .pc-line { grid-template-columns: minmax(0, 1fr) 90px 42px; gap: 0.25rem; }
+      .pc-line { grid-template-columns: minmax(0, 1fr) 85px 68px; gap: 0.3rem; }
       .pc-section { padding: 1rem; }
       .pc-summary-tile-value { font-size: 1.35rem; }
       .pc-breakdown-grid { grid-template-columns: 1fr 1fr; }
@@ -2424,22 +2425,28 @@
             ]
           },
           {
-            id: 'sec-3', name: 'Benefits & Deductions', type: 'deductions',
+            id: 'sec-3', name: 'Benefits', type: 'benefits',
             lines: [
               { id: 'l-8', label: 'Health Insurance', amount: 0, hidden: false },
               { id: 'l-9', label: 'Dental', amount: 0, hidden: false },
-              { id: 'l-10', label: '401(k) / Retirement', amount: 0, hidden: false },
+              { id: 'l-9b', label: 'Vision', amount: 0, hidden: false },
+            ]
+          },
+          {
+            id: 'sec-4', name: 'Retirement & Savings', type: 'retirement',
+            lines: [
+              { id: 'l-10', label: '401(k)', amount: 0, hidden: false },
               { id: 'l-11', label: 'HSA / FSA', amount: 0, hidden: false },
             ]
           },
           {
-            id: 'sec-4', name: 'Other', type: 'other',
+            id: 'sec-5', name: 'Other', type: 'other',
             lines: [
               { id: 'l-12', label: '', amount: 0, hidden: false },
             ]
           },
         ];
-        this.nextPaycheckSectionId = 5;
+        this.nextPaycheckSectionId = 6;
         this.nextPaycheckLineId = 13;
         this.pcDragState = null;
         this.spendingCategories = {
@@ -2546,33 +2553,39 @@
           },
         };
         // Demo data for paycheck v2 tab
+        // Demo: NYC-based marketing manager, early 30s, ~$75k salary
+        // Semimonthly pay = 24 paychecks/year, gross per check ~$3,125
         this.demoPaycheckSections = [
           {
             id: 'sec-1', name: 'Earnings', type: 'earnings',
             lines: [
-              { id: 'l-1', label: 'Regular Pay', amount: 4200, hidden: false },
-              { id: 'l-2', label: 'Overtime', amount: 300, hidden: false },
+              { id: 'l-1', label: 'Regular Pay', amount: 3125, hidden: false },
             ]
           },
           {
             id: 'sec-2', name: 'Taxes', type: 'taxes',
             lines: [
-              { id: 'l-3', label: 'Federal Income Tax', amount: 650, hidden: false },
-              { id: 'l-4', label: 'Social Security (6.2%)', amount: 279, hidden: false },
-              { id: 'l-5', label: 'Medicare (1.45%)', amount: 65.25, hidden: false },
-              { id: 'l-6', label: 'NY State Income Tax', amount: 220, hidden: false },
-              { id: 'l-7', label: 'NYC Local Tax', amount: 90, hidden: false },
-              { id: 'l-8', label: 'SDI', amount: 15, hidden: false },
-              { id: 'l-9', label: 'Paid Family Leave', amount: 8, hidden: false },
+              { id: 'l-3', label: 'Federal Income Tax', amount: 468.75, hidden: false },
+              { id: 'l-4', label: 'Social Security (6.2%)', amount: 193.75, hidden: false },
+              { id: 'l-5', label: 'Medicare (1.45%)', amount: 45.31, hidden: false },
+              { id: 'l-6', label: 'NY State Income Tax', amount: 156.25, hidden: false },
+              { id: 'l-7', label: 'NYC Local Tax', amount: 75.00, hidden: false },
+              { id: 'l-8', label: 'NY SDI', amount: 1.20, hidden: false },
+              { id: 'l-9', label: 'NY Paid Family Leave', amount: 10.32, hidden: false },
             ]
           },
           {
-            id: 'sec-3', name: 'Benefits & Deductions', type: 'deductions',
+            id: 'sec-3', name: 'Benefits', type: 'benefits',
             lines: [
-              { id: 'l-10', label: 'Health Insurance (Medical)', amount: 150, hidden: false },
-              { id: 'l-11', label: 'Dental', amount: 20, hidden: false },
-              { id: 'l-12', label: '401(k)', amount: 225, hidden: false },
-              { id: 'l-13', label: 'HSA', amount: 100, hidden: false },
+              { id: 'l-10', label: 'Health Insurance (Medical)', amount: 125.00, hidden: false },
+              { id: 'l-11', label: 'Dental', amount: 12.50, hidden: false },
+              { id: 'l-11b', label: 'Vision', amount: 6.00, hidden: false },
+            ]
+          },
+          {
+            id: 'sec-4', name: 'Retirement & Savings', type: 'retirement',
+            lines: [
+              { id: 'l-12', label: '401(k) - 5% contribution', amount: 156.25, hidden: false },
             ]
           },
         ];
@@ -2718,10 +2731,11 @@
 
         // Upload zone
         html += `
-          <div class="pc-upload-zone" id="pc-upload-zone" role="button" tabindex="0" aria-label="Upload pay stub">
+          <div class="pc-upload-zone" id="pc-upload-zone" role="button" tabindex="0" aria-label="Upload pay stub"
+            title="A pay stub is the paper (or PDF) your employer gives you each payday that shows exactly how much you earned and where every dollar went before it hit your bank account. Upload a photo or file and we'll read it for you automatically.">
             <div class="upload-icon">📄</div>
             <div class="upload-text">${this.paystubs.length > 0 ? 'Add another pay stub' : 'Upload a pay stub'}</div>
-            <div class="upload-subtext">AI reads and pre-fills your values - or enter manually below</div>
+            <div class="upload-subtext">AI reads and pre-fills your values - or skip this and enter manually below</div>
             <input type="file" accept="image/*,application/pdf" id="pc-file-input" aria-label="Upload pay stub file">
           </div>
           <div id="pc-extracting-status" style="display:none;"><div class="pc-extracting"><div class="pc-spinner"></div>Reading your pay stub...</div></div>
@@ -2730,12 +2744,20 @@
         // Pay frequency selector
         html += `
           <div style="margin-top: 1.25rem; margin-bottom: 0;">
-            <div class="card-title" style="margin-bottom: 0.6rem;">How often are you paid?</div>
+            <div class="card-title" style="margin-bottom: 0.4rem;">How often are you paid?</div>
+            <p style="font-size:0.72rem; color:var(--text-tertiary); font-family:'Plus Jakarta Sans',sans-serif; margin-bottom:0.6rem; line-height:1.4;"
+              title="This tells us how many paychecks you get per year so we can show you accurate yearly, monthly, weekly, and daily equivalents of your pay.">
+              This is used to convert your per-paycheck amounts into other timeframes.
+            </p>
             <div class="pc-frequency-bar" id="pc-freq-bar">
-              <button class="pc-freq-btn ${this.payFrequency === 'weekly' ? 'active' : ''}" data-freq="weekly">Weekly</button>
-              <button class="pc-freq-btn ${this.payFrequency === 'biweekly' ? 'active' : ''}" data-freq="biweekly">Every 2 Wks</button>
-              <button class="pc-freq-btn ${this.payFrequency === 'semimonthly' ? 'active' : ''}" data-freq="semimonthly">Twice / Mo</button>
-              <button class="pc-freq-btn ${this.payFrequency === 'monthly' ? 'active' : ''}" data-freq="monthly">Monthly</button>
+              <button class="pc-freq-btn ${this.payFrequency === 'weekly' ? 'active' : ''}" data-freq="weekly"
+                title="You get paid once every week - 52 paychecks per year.">Weekly</button>
+              <button class="pc-freq-btn ${this.payFrequency === 'biweekly' ? 'active' : ''}" data-freq="biweekly"
+                title="You get paid every two weeks - 26 paychecks per year. This is the most common schedule in the U.S.">Every 2 Wks</button>
+              <button class="pc-freq-btn ${this.payFrequency === 'semimonthly' ? 'active' : ''}" data-freq="semimonthly"
+                title="You get paid twice a month on fixed dates (like the 1st and 15th) - 24 paychecks per year. Looks similar to bi-weekly but the amounts differ slightly.">Twice / Mo</button>
+              <button class="pc-freq-btn ${this.payFrequency === 'monthly' ? 'active' : ''}" data-freq="monthly"
+                title="You get paid once a month - 12 paychecks per year. Common for salaried employees at some companies.">Monthly</button>
             </div>
           </div>
         `;
@@ -2745,8 +2767,8 @@
         html += `<div class="spending-categories-card">`;
         html += `
           <div class="spending-section-header">
-            <h3>Paycheck Sections</h3>
-            <button class="sort-btn" onclick="dashboard.pcSortSectionsByAmount()" title="Sort sections by amount" aria-label="Sort sections by amount">
+            <h3 title="Your paycheck is broken into sections - money coming in (Earnings), money the government takes (Taxes), money taken out for your benefits and future (Benefits, Retirement), and anything else. Every amount here is what appears on a single paycheck.">Paycheck Sections</h3>
+            <button class="sort-btn" onclick="dashboard.pcSortSectionsByAmount()" title="Re-order sections from largest to smallest dollar amount so you can quickly see where the biggest chunks of your paycheck are going." aria-label="Sort sections by amount">
               <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <polyline points="19 12 12 19 5 12"></polyline>
@@ -2762,7 +2784,8 @@
         html += `</div>`;
 
         html += `<div style="margin-top: 1.25rem;">`;
-        html += `<button class="add-category-btn" id="pc-add-section-btn">+ Add Section</button>`;
+        html += `<button class="add-category-btn" id="pc-add-section-btn"
+          title="Create a new custom section for any line items on your pay stub that don't fit neatly into the existing categories - like a car allowance, a commission, or a union dues line.">+ Add Section</button>`;
         html += `</div>`;
         html += `</div>`; // end sections card
 
@@ -2773,7 +2796,7 @@
 
         // Time scale + summary tiles
         html += `<div class="card" style="padding-bottom: 1rem;" id="pc-right-summary-card">`;
-        html += `<div class="card-title">View as</div>`;
+        html += `<div class="card-title" title="Pick any time window to see what your paycheck amounts add up to over that period. All the numbers on this panel update together when you switch.">View As</div>`;
         html += `<div id="pc-right-summary">`;
         html += this.renderPcTimescaleBar(totals);
         html += this.renderPcSummaryTiles(totals);
@@ -2782,7 +2805,7 @@
 
         // Paycheck composition bar
         html += `<div class="card">`;
-        html += `<div class="card-title">Paycheck Composition</div>`;
+        html += `<div class="card-title" title="This shows every section of your paycheck as a share of your total gross earnings. The bar is your whole paycheck - each colored slice is one section. Hover or tap a section in the legend to see the dollar amount.">Paycheck Composition</div>`;
         html += `<div id="pc-right-composition">`;
         html += this.renderPcComposition(totals);
         html += `</div>`;
@@ -2790,7 +2813,7 @@
 
         // Budget guideline (50/30/20)
         html += `<div class="card">`;
-        html += `<div class="card-title">50/30/20 Guideline</div>`;
+        html += `<div class="card-title" title="This is a popular rule of thumb for how to split your take-home pay. It's a starting point, not a strict rule - your situation may be different, especially in a high-cost city like New York.">50/30/20 Guideline</div>`;
         html += `<div id="pc-right-guideline">`;
         html += this.renderPcBudgetGuideline(totals);
         html += `</div>`;
@@ -2807,20 +2830,35 @@
         const color = this.pcSectionColor(section.type);
         const scaledTotal = this.pcScale(total);
         const scaledLabel = this.pcScaleLabel();
-        const tooltipText = `${scaledLabel} total - ${this.pcSectionPct(section)}% of gross`;
+        const tooltipText = `${scaledLabel} total across all visible lines in this section - ${this.pcSectionPct(section)}% of your gross pay`;
+
+        const typeDescriptions = {
+          earnings:   'Earnings - money your employer pays you before anything is taken out.',
+          taxes:      'Taxes - money automatically sent to the government. You never touch this portion.',
+          benefits:   'Benefits - deductions for insurance coverage your employer offers. You pay part, they often pay the rest.',
+          retirement: 'Retirement & Savings - money set aside for your future self, pre-tax in most cases.',
+          deductions: 'Deductions - amounts taken out of your paycheck before it reaches you.',
+          other:      'Other - anything on your pay stub that does not fit neatly elsewhere.',
+        };
+        const typeTip = typeDescriptions[section.type] || 'Custom section.';
 
         let html = `
           <div class="pc-section" data-section-id="${section.id}" id="pcs-${section.id}">
             <div class="pc-section-header">
-              <span class="pc-section-type-dot" style="background:${color};"></span>
-              <span class="pc-section-name" data-section-name="${section.id}">${this.escapeHtml(section.name)}</span>
+              <span class="pc-section-type-dot" style="background:${color};" title="${typeTip}"></span>
+              <span class="pc-section-name" data-section-name="${section.id}"
+                title="Click to rename this section. You can call it anything that makes sense to you.">${this.escapeHtml(section.name)}</span>
               <div class="pc-section-actions">
                 <span class="pc-section-total category-total" data-section-total="${section.id}" role="tooltip">
                   ${this.formatCurrency(scaledTotal)}
                   <div class="tooltip">${tooltipText}</div>
                 </span>
-                <button class="add-btn" data-pc-add-line="${section.id}" title="Add line" aria-label="Add line to ${this.escapeHtml(section.name)}">+</button>
-                <button class="remove-btn" data-pc-remove-section="${section.id}" title="Remove section" aria-label="Remove section">&times;</button>
+                <button class="add-btn" data-pc-add-line="${section.id}"
+                  title="Add a new line item to this section - useful if your pay stub has more entries than are listed here."
+                  aria-label="Add line to ${this.escapeHtml(section.name)}">+</button>
+                <button class="remove-btn" data-pc-remove-section="${section.id}"
+                  title="Remove this entire section and all its line items. If the section is empty it will be removed automatically."
+                  aria-label="Remove section">&times;</button>
               </div>
             </div>
             <div class="category-body" id="pclines-${section.id}">
@@ -2836,41 +2874,52 @@
 
       renderPcLineHTML(sectionId, line, idx) {
         const isHidden = !!line.hidden;
-        const scaledAmount = this.pcScale(line.amount || 0);
         return `
           <div class="pc-line${isHidden ? ' item-hidden' : ''}" data-line-id="${line.id}" data-section-id="${sectionId}" data-line-idx="${idx}" draggable="true">
             <div style="display:flex; align-items:center; gap:0.2rem; min-width:0;">
-              <div class="pc-drag-handle" title="Drag to reorder or move between sections" aria-label="Drag handle">
+              <div class="pc-drag-handle"
+                title="Drag this line to reorder it, or drop it into a different section if the AI placed it in the wrong group."
+                aria-label="Drag to reorder or move to another section">
                 <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.5"/><circle cx="7.5" cy="2.5" r="1.5"/><circle cx="2.5" cy="7" r="1.5"/><circle cx="7.5" cy="7" r="1.5"/><circle cx="2.5" cy="11.5" r="1.5"/><circle cx="7.5" cy="11.5" r="1.5"/></svg>
               </div>
-              <input type="text" class="subcategory-input" data-line-field="label" data-line-id="${line.id}" data-section-id="${sectionId}" value="${this.escapeHtml(line.label || '')}" placeholder="Line item name" aria-label="Line name" style="min-width:0;">
+              <input type="text" class="subcategory-input" data-line-field="label" data-line-id="${line.id}" data-section-id="${sectionId}"
+                value="${this.escapeHtml(line.label || '')}" placeholder="Line item name" aria-label="Line name" style="min-width:0;"
+                title="Type the name of this line exactly as it appears on your pay stub - for example &quot;Federal Income Tax&quot; or &quot;Medical PPO.&quot;">
             </div>
-            <input type="text" inputmode="decimal" class="subcategory-input currency-input" data-line-field="amount" data-line-id="${line.id}" data-section-id="${sectionId}" data-currency="true" value="${line.amount > 0 ? line.amount.toFixed(2) : ''}" placeholder="0.00" aria-label="Amount per paycheck"
-              title="Enter the amount from your paycheck (per pay period). Hover the totals on the right to see it scaled to your selected timeframe.">
+            <input type="text" inputmode="decimal" class="subcategory-input currency-input" data-line-field="amount"
+              data-line-id="${line.id}" data-section-id="${sectionId}" data-currency="true"
+              value="${line.amount > 0 ? line.amount.toFixed(2) : ''}" placeholder="0.00" aria-label="Amount per paycheck"
+              title="Enter the dollar amount shown for this line on one paycheck - not your yearly total. The summary panel on the right will automatically calculate what that adds up to weekly, monthly, and annually.">
             <div class="pc-line-actions">
-              <button class="hide-btn${isHidden ? ' is-hidden' : ''}" data-pc-hide-line="${line.id}" data-section-id="${sectionId}" title="${isHidden ? 'Unhide' : 'Hide - exclude from totals'}" aria-label="${isHidden ? 'Unhide' : 'Hide'}" aria-pressed="${isHidden}">
+              <button class="hide-btn${isHidden ? ' is-hidden' : ''}" data-pc-hide-line="${line.id}" data-section-id="${sectionId}"
+                title="${isHidden ? 'This line is hidden and not counted in any totals. Click to include it again.' : 'Hide this line to temporarily remove it from all calculations without deleting it - useful if a line does not apply to you this period.'}"
+                aria-label="${isHidden ? 'Unhide' : 'Hide'}" aria-pressed="${isHidden}">
                 ${this.getEyeIconSVG(isHidden)}
               </button>
-              <button class="remove-btn" data-pc-remove-line="${line.id}" data-section-id="${sectionId}" title="Remove line" aria-label="Remove">&times;</button>
+              <button class="remove-btn" data-pc-remove-line="${line.id}" data-section-id="${sectionId}"
+                title="Permanently delete this line. If the section becomes empty, the section will be removed too."
+                aria-label="Remove">&times;</button>
             </div>
-            ${isHidden ? '<span class="hidden-tag" style="grid-column:1/-1;">Hidden</span>' : ''}
+            ${isHidden ? '<span class="hidden-tag" style="grid-column:1/-1;">Hidden - excluded from totals</span>' : ''}
           </div>
         `;
       }
 
       renderPcTimescaleBar(totals) {
         const scales = [
-          { key: 'daily', label: 'Daily' },
-          { key: 'weekly', label: 'Weekly' },
-          { key: 'monthly', label: 'Monthly' },
-          { key: 'yearly', label: 'Yearly' },
+          { key: 'daily',    label: 'Daily',     tip: 'See what your gross earnings work out to per day. Divide your annual salary by 365 - helpful for understanding the value of a single day of work.' },
+          { key: 'weekly',   label: 'Weekly',    tip: 'See all amounts as weekly equivalents. Useful if you think of your budget in weekly terms.' },
+          { key: 'biweekly', label: 'Bi-Weekly', tip: 'See all amounts over a two-week period. This matches most bi-weekly pay schedules and is a natural budgeting window for many people.' },
+          { key: 'monthly',  label: 'Monthly',   tip: 'See all amounts as monthly equivalents. Most bills and expenses are monthly, so this view makes it easiest to compare your income against your spending.' },
+          { key: 'yearly',   label: 'Yearly',    tip: 'See your full annual earnings and deductions. This is your total compensation picture for the year.' },
         ];
         const grossPerPaycheck = this.pcSectionsTotalByType('earnings');
         let html = `<div class="pc-timescale-bar">`;
         scales.forEach(s => {
           const val = this.pcScaleValue(grossPerPaycheck, s.key);
           html += `
-            <div class="pc-scale-btn${this.paycheckTimeScale === s.key ? ' active' : ''}" data-pc-scale="${s.key}" title="View all amounts as ${s.label.toLowerCase()} equivalents" role="button" tabindex="0">
+            <div class="pc-scale-btn${this.paycheckTimeScale === s.key ? ' active' : ''}" data-pc-scale="${s.key}"
+              title="${s.tip}" role="button" tabindex="0">
               <span class="pc-scale-btn-label">${s.label}</span>
               <span class="pc-scale-btn-value">${this.formatCurrencyCompact(val)}</span>
             </div>
@@ -2888,33 +2937,42 @@
         const taxes = this.pcScale(totals.taxes);
         const net = this.pcScale(totals.net);
 
+        const taxPct    = totals.gross > 0 ? ((totals.taxes / totals.gross) * 100).toFixed(1) : '0.0';
+        const dedPct    = totals.gross > 0 ? ((totals.deductions / totals.gross) * 100).toFixed(1) : '0.0';
+        const netPct    = totals.gross > 0 ? ((totals.net / totals.gross) * 100).toFixed(1) : '0.0';
+
         return `
           <div class="ret-metrics-stack">
-            <div class="pc-summary-tile featured">
+            <div class="pc-summary-tile"
+              title="Take-home pay is the money that actually lands in your bank account after everything has been taken out. It's what you have left to spend, save, or invest.">
               <span class="pc-summary-tile-label">Take-Home (Net)</span>
               <span class="pc-summary-tile-value">${this.formatCurrency(net)}</span>
               <span class="pc-summary-tile-sub">${label} equivalent</span>
             </div>
             <div class="pc-breakdown-grid" style="margin-top: 0.75rem;">
-              <div class="pc-breakdown-mini">
+              <div class="pc-breakdown-mini"
+                title="Gross pay is the total your employer pays you before anything is taken out - taxes, insurance, retirement contributions, all of it. Think of it as the &quot;sticker price&quot; of your salary.">
                 <div class="pc-breakdown-mini-label">Gross</div>
                 <div class="pc-breakdown-mini-value">${this.formatCurrency(gross)}</div>
                 <div class="pc-breakdown-mini-pct">100%</div>
               </div>
-              <div class="pc-breakdown-mini">
+              <div class="pc-breakdown-mini"
+                title="Taxes are money the government takes from your paycheck automatically. This includes federal, state, and city income taxes, plus Social Security and Medicare contributions. You never see this money - it's gone before you do.">
                 <div class="pc-breakdown-mini-label">Taxes</div>
                 <div class="pc-breakdown-mini-value">${this.formatCurrency(taxes)}</div>
-                <div class="pc-breakdown-mini-pct">${totals.gross > 0 ? ((totals.taxes / totals.gross) * 100).toFixed(1) : '0.0'}%</div>
+                <div class="pc-breakdown-mini-pct">${taxPct}%</div>
               </div>
-              <div class="pc-breakdown-mini">
+              <div class="pc-breakdown-mini"
+                title="Deductions are amounts your employer takes out for things like health insurance, dental, and retirement savings. Unlike taxes, these deductions often benefit you directly - you're paying for your own coverage or future savings.">
                 <div class="pc-breakdown-mini-label">Deductions</div>
                 <div class="pc-breakdown-mini-value">${this.formatCurrency(deductions)}</div>
-                <div class="pc-breakdown-mini-pct">${totals.gross > 0 ? ((totals.deductions / totals.gross) * 100).toFixed(1) : '0.0'}%</div>
+                <div class="pc-breakdown-mini-pct">${dedPct}%</div>
               </div>
-              <div class="pc-breakdown-mini">
+              <div class="pc-breakdown-mini"
+                title="This is your take-home pay - the portion of your gross that actually hits your bank account. Everything else was taken out first.">
                 <div class="pc-breakdown-mini-label">Net</div>
                 <div class="pc-breakdown-mini-value">${this.formatCurrency(net)}</div>
-                <div class="pc-breakdown-mini-pct">${totals.gross > 0 ? ((totals.net / totals.gross) * 100).toFixed(1) : '0.0'}%</div>
+                <div class="pc-breakdown-mini-pct">${netPct}%</div>
               </div>
             </div>
           </div>
@@ -2942,7 +3000,8 @@
           const pct = ((s.total / gross) * 100).toFixed(1);
           const scaled = this.pcScale(s.total);
           return `
-            <div class="pc-percent-legend-item">
+            <div class="pc-percent-legend-item"
+              title="${this.escapeHtml(s.name)}: ${pct}% of your gross pay goes here. ${this.pcScaleLabel()} equivalent: ${this.formatCurrency(scaled)}.">
               <div class="pc-percent-dot" style="background:${s.color};"></div>
               <div class="pc-percent-legend-text">
                 <span class="pc-percent-legend-pct">${pct}%</span> ${this.escapeHtml(s.name)}
@@ -2953,12 +3012,13 @@
         }).join('');
 
         return `
-          <div class="pc-percent-bar-wrap">
+          <div class="pc-percent-bar-wrap"
+            title="Each colored slice represents one section of your paycheck as a share of your total gross. The wider the slice, the more of your paycheck goes to that category.">
             <div class="pc-percent-bar">${barSegments}</div>
           </div>
           <div class="pc-percent-legend" id="pc-legend">${legendItems}</div>
           <div style="margin-top:0.75rem; font-size:0.7rem; color:var(--text-tertiary); font-family:'Plus Jakarta Sans',sans-serif;">
-            All amounts shown as ${this.pcScaleLabel().toLowerCase()} equivalents.
+            Amounts shown as ${this.pcScaleLabel().toLowerCase()} equivalents. Switch the timeframe above to update all values together.
           </div>
         `;
       }
@@ -2969,14 +3029,27 @@
         const label = this.pcScaleLabel();
 
         const guidelines = [
-          { key: 'essential', label: 'Essential Needs', pct: 50, fillClass: 'essential', description: 'Housing, food, utilities, transport, insurance' },
-          { key: 'lifestyle', label: 'Lifestyle & Wants', pct: 30, fillClass: 'lifestyle', description: 'Dining out, hobbies, subscriptions, entertainment' },
-          { key: 'future', label: 'Savings & Debt', pct: 20, fillClass: 'future', description: 'Emergency fund, retirement, investments, extra debt payments' },
+          {
+            key: 'essential', label: 'Essential Needs', pct: 50, fillClass: 'essential',
+            description: 'Housing, food, utilities, transportation, insurance',
+            tip: 'Needs are things you truly cannot go without - rent, groceries, electricity, your commute. The rule suggests keeping these under 50% of your take-home pay. If rent alone takes up most of this, that\'s a sign your cost of living may be stretched, which is common in NYC.',
+          },
+          {
+            key: 'lifestyle', label: 'Lifestyle & Wants', pct: 30, fillClass: 'lifestyle',
+            description: 'Dining out, hobbies, subscriptions, entertainment',
+            tip: 'Wants are things that improve your life but are not strictly necessary - restaurants, streaming services, gym memberships, clothing beyond basics. This bucket is where lifestyle choices live. 30% is a guideline, not a ceiling.',
+          },
+          {
+            key: 'future', label: 'Savings & Debt Payoff', pct: 20, fillClass: 'future',
+            description: 'Emergency fund, retirement contributions, extra debt payments',
+            tip: 'This is the money you set aside for your future self. Even 5% saved consistently over years compounds into a meaningful cushion. If you have high-interest debt (like credit cards), aggressively paying that off first is generally the smartest use of this bucket.',
+          },
         ];
 
         let html = `
-          <p class="pc-guideline-intro">
-            The 50/30/20 rule is a general starting point - not a prescription. It shows how much of your take-home pay would go to each bucket if you followed this model. Compare it against your actual spending in the Spending tab.
+          <p class="pc-guideline-intro"
+            title="The 50/30/20 rule was popularized by Senator Elizabeth Warren in her book All Your Worth. It is a useful mental model but was designed for average U.S. costs of living - NYC rents alone often push the Needs bucket well above 50%, which is normal and does not mean you are doing it wrong.">
+            The 50/30/20 rule is a starting point, not a rule. It shows what your take-home pay would look like if you followed this model. For what you actually spend, see the Spending tab.
           </p>
         `;
 
@@ -2988,7 +3061,7 @@
         guidelines.forEach(g => {
           const amount = scaledNet * (g.pct / 100);
           html += `
-            <div class="pc-guideline-item">
+            <div class="pc-guideline-item" title="${g.tip}">
               <div class="pc-guideline-header">
                 <span class="pc-guideline-label">${g.label}</span>
                 <div class="pc-guideline-range">
@@ -3004,7 +3077,10 @@
           `;
         });
 
-        html += `<div style="font-size:0.7rem; color:var(--text-tertiary); font-family:'Plus Jakarta Sans',sans-serif; border-top:1px solid var(--border); padding-top:0.75rem; margin-top:0.25rem;">Based on ${label.toLowerCase()} take-home of ${this.formatCurrency(scaledNet)}</div>`;
+        html += `<div style="font-size:0.7rem; color:var(--text-tertiary); font-family:'Plus Jakarta Sans',sans-serif; border-top:1px solid var(--border); padding-top:0.75rem; margin-top:0.25rem;"
+          title="All guideline amounts update automatically when you switch the timeframe in the View As panel above.">
+          Based on ${label.toLowerCase()} take-home of ${this.formatCurrency(scaledNet)}
+        </div>`;
         return html;
       }
 
@@ -3025,16 +3101,17 @@
         const ppy = this.pcPaychecksPerYear();
         const annualValue = perPaycheckValue * ppy;
         const map = {
-          daily: annualValue / 365,
-          weekly: annualValue / 52,
-          monthly: annualValue / 12,
-          yearly: annualValue,
+          daily:     annualValue / 365,
+          weekly:    annualValue / 52,
+          biweekly:  annualValue / 26,
+          monthly:   annualValue / 12,
+          yearly:    annualValue,
         };
         return map[scale] !== undefined ? map[scale] : annualValue / 12;
       }
 
       pcScaleLabel() {
-        const map = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Annual' };
+        const map = { daily: 'Daily', weekly: 'Weekly', biweekly: 'Bi-Weekly', monthly: 'Monthly', yearly: 'Annual' };
         return map[this.paycheckTimeScale] || 'Monthly';
       }
 
@@ -3061,7 +3138,10 @@
       getPcTotals() {
         const gross = this.pcSectionsTotalByType('earnings');
         const taxes = this.pcSectionsTotalByType('taxes');
-        const deductions = this.pcSectionsTotalByType('deductions');
+        // 'benefits', 'retirement', and legacy 'deductions' all reduce take-home
+        const deductions = this.pcSectionsTotalByType('deductions')
+          + this.pcSectionsTotalByType('benefits')
+          + this.pcSectionsTotalByType('retirement');
         const other = this.pcSectionsTotalByType('other');
         const net = gross - taxes - deductions - other;
         return { gross, taxes, deductions, other, net };
@@ -3069,10 +3149,12 @@
 
       pcSectionColor(type) {
         const map = {
-          earnings: this.getCategoryColor(0),
-          taxes: this.getCategoryColor(5),
-          deductions: this.getCategoryColor(1),
-          other: this.getCategoryColor(3),
+          earnings:    this.getCategoryColor(0),
+          taxes:       this.getCategoryColor(5),
+          benefits:    this.getCategoryColor(1),
+          retirement:  this.getCategoryColor(2),
+          deductions:  this.getCategoryColor(1), // legacy alias
+          other:       this.getCategoryColor(3),
         };
         return map[type] || this.getCategoryColor(7);
       }
