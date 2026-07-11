@@ -1998,9 +1998,78 @@
     }
 
     /* ============================================================
-       PAYCHECK TAB - v2 styles
-       Naming prefix: pc- to avoid collision with spending/ret/debt
+       SPENDING TAB - 2-column layout (exploratory, V47+)
+       Left: category inputs. Right: sticky summary panel.
+       Prefix: sp- to avoid collision with existing classes.
     ============================================================ */
+    .sp-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2.5rem;
+    }
+    .sp-left { display: flex; flex-direction: column; gap: 0; }
+    .sp-right { display: flex; flex-direction: column; gap: 1.5rem; position: sticky; top: 1.5rem; height: fit-content; }
+
+    /* Compact breakdown tiles in the right panel - reuse breakdown-item styles
+       but stack them in a 2x2 grid that fits the narrower right column */
+    .sp-breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    /* Chart container in right column - slightly smaller than full-width */
+    .sp-chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 240px;
+      height: 240px;
+      margin: 1.5rem auto 1rem auto;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    /* Summary tile reused from pc- pattern */
+    .sp-summary-tile {
+      background: var(--bg-input);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .sp-summary-tile-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .sp-summary-tile-value {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      color: var(--primary);
+    }
+    .sp-summary-tile-value.negative { color: var(--danger); }
+    .sp-summary-tile-value.positive { color: var(--success); }
+    .sp-summary-tile-sub {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin-top: 0.1rem;
+    }
+
+    @media (max-width: 1100px) {
+      .sp-layout { grid-template-columns: 1fr; }
+      .sp-right { position: static; }
+    }
+    @media (max-width: 640px) {
+      .sp-layout { gap: 1.5rem; }
+      .sp-breakdown-grid { grid-template-columns: 1fr 1fr; }
+      .sp-chart-container { max-width: 200px; height: 200px; }
+      .sp-summary-tile-value { font-size: 1.35rem; }
+    }
 
     .pc-layout {
       display: grid;
@@ -3724,9 +3793,12 @@ If payFrequency cannot be determined, guess "biweekly".`,
         const totalSpending = this.getSpendingTotals();
         const paycheck = this.getPaycheckTotals();
         const hasPaystubData = this.getPcTotals().gross > 0;
+        const disposableMonthly = hasPaystubData ? (paycheck.biMonthlyPaycheck * 2) - totalSpending : null;
 
-        let html = `<div class="container">`;
+        let html = `<div class="container"><div class="sp-layout">`;
 
+        // ---- LEFT: category inputs ----
+        html += `<div class="sp-left">`;
         html += `<div class="spending-categories-card">`;
         html += `<div class="spending-section-header">
           <h3>Categories</h3>
@@ -3737,7 +3809,6 @@ If payFrequency cannot be determined, guess "biweekly".`,
             </svg>
           </button>
         </div>`;
-
         html += `<div class="spending-categories-wrapper">`;
         Object.entries(this.spendingCategories).forEach(([categoryKey, category]) => {
           if (categoryKey === 'other') return;
@@ -3745,16 +3816,85 @@ If payFrequency cannot be determined, guess "biweekly".`,
         });
         html += this.renderSpendingCategoryHTML('other', this.spendingCategories.other);
         html += `</div>`;
-
         html += `<div style="margin-top: 1.25rem;">`;
         html += `<button class="add-category-btn" title="Add new spending category" aria-label="Add new spending category">+ Add Category</button>`;
         html += `</div>`;
-        html += `</div>`;
+        html += `</div>`; // end spending-categories-card
+        html += `</div>`; // end sp-left
 
-        const disposableMonthly = hasPaystubData ? (paycheck.biMonthlyPaycheck * 2) - totalSpending : null;
-        html += this.renderAggregatedSpendingCardHTML(totalSpending, disposableMonthly);
+        // ---- RIGHT: summary panel ----
+        html += `<div class="sp-right">`;
+        html += this.renderSpendingRightPanel(totalSpending, disposableMonthly);
+        html += `</div>`; // end sp-right
 
-        html += '</div>';
+        html += `</div></div>`; // end sp-layout + container
+        return html;
+      }
+
+      renderSpendingRightPanel(totalMonthly, disposableMonthly) {
+        const tipText = this.isTouchDevice
+          ? 'Tap a segment for details. Long press to expand into subcategories.'
+          : 'Click a category to see its subcategories.';
+
+        const scaledTotal = this.getScaledValue(totalMonthly);
+        const scaledDisposable = disposableMonthly !== null ? this.getScaledValue(disposableMonthly) : null;
+        const scaleLabel = { daily: 'Daily', weekly: 'Weekly', biweekly: 'Bi-weekly', monthly: 'Monthly', yearly: 'Yearly' }[this.currentInterval] || 'Monthly';
+
+        let html = '';
+
+        // Timeframe breakdown tiles card
+        html += `<div class="card">`;
+        html += `<div class="card-title">Total Spending</div>`;
+        html += `<div class="sp-summary-tile" style="margin-bottom: 0.75rem;">
+          <span class="sp-summary-tile-label" id="centerLabelDisplay">${scaleLabel}</span>
+          <span class="sp-summary-tile-value" id="lockedCenterDisplay">${this.formatCurrency(scaledTotal)}</span>
+        </div>`;
+
+        // 2x2 breakdown tiles (daily, weekly, monthly, yearly) - each is clickable to switch interval
+        html += `<div class="sp-breakdown-grid">`;
+        const periods = [
+          { key: 'daily',    label: 'Daily',    val: totalMonthly / 30 },
+          { key: 'weekly',   label: 'Weekly',   val: totalMonthly / 4.286 },
+          { key: 'monthly',  label: 'Monthly',  val: totalMonthly },
+          { key: 'yearly',   label: 'Yearly',   val: totalMonthly * 12 },
+        ];
+        periods.forEach(p => {
+          const isActive = this.currentInterval === p.key;
+          html += `
+            <div class="breakdown-item${isActive ? ' active' : ''}" data-breakdown-period="${p.key}">
+              <div class="breakdown-label">${p.label}</div>
+              <div class="breakdown-value">${this.formatCurrency(p.val)}</div>
+            </div>
+          `;
+        });
+        html += `</div>`; // end sp-breakdown-grid
+
+        // Disposable row (only if paycheck data exists)
+        if (scaledDisposable !== null) {
+          html += `
+            <div class="total-row" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+              <span class="total-label">Disposable</span>
+              <span id="disposableDisplay" class="total-amount ${scaledDisposable >= 0 ? 'positive' : 'negative'}">
+                ${this.formatCurrency(scaledDisposable)}
+              </span>
+            </div>
+          `;
+        }
+        html += `</div>`; // end card
+
+        // Donut chart card
+        html += `<div class="card">`;
+        html += `<div class="card-title">Breakdown by Category</div>`;
+        html += `<div class="sp-chart-container">
+          <canvas id="timeScaleRefreshChart"></canvas>
+          <div class="chart-center-text">
+            <div class="label" style="display:none;"></div>
+            <div class="total-amount"></div>
+          </div>
+        </div>`;
+        html += `<div class="chart-tip">${tipText}</div>`;
+        html += `</div>`; // end card
+
         return html;
       }
 
@@ -3765,7 +3905,7 @@ If payFrequency cannot be determined, guess "biweekly".`,
             <div class="ret-grid-layout">
               <div class="ret-left-section">
                 <div class="card">
-                  <div class="card-title">Your Timeline & Parameters</div>
+                  <div class="card-title">About You & Your Retirement Plan</div>
                   <div class="ret-form-grid">
                     <div class="ret-field-block">
                       <label class="ret-label" title="We use this to figure out how old you are today">Date of Birth</label>
@@ -3780,7 +3920,7 @@ If payFrequency cannot be determined, guess "biweekly".`,
                       <input type="number" id="ret-tax" class="ret-input" value="${this.retirementInputs.estimatedTaxRate}" min="0" max="90" step="0.5" onchange="dashboard.updateRetirementInputs()" oninput="dashboard.updateRetirementInputs()">
                     </div>
                     <div class="ret-field-block" style="grid-column: 1 / -1;">
-                      <label class="ret-label" title="How much money you'll need each year after you stop working">Annual Spending in Retirement</label>
+                      <label class="ret-label" title="How much money you plan to spend each year once you stop working - enter this as a pre-tax (before taxes) number. For example, if you want \$75,000 worth of actual purchasing power in retirement, you may need to enter a higher number here to account for taxes on withdrawals from pre-tax accounts like a 401(k). A common rule of thumb is to plan for 70-80% of your current income.">Annual Spending in Retirement (pre-tax)</label>
                       <input type="text" inputmode="decimal" id="ret-spend" class="ret-input" data-currency="true" value="${this.retirementInputs.annualPostRetireSpend}" onchange="dashboard.updateRetirementInputs()" oninput="dashboard.updateRetirementInputs()">
                     </div>
                   </div>
@@ -4073,8 +4213,21 @@ If payFrequency cannot be determined, guess "biweekly".`,
           case 'postTax':
             return acc.type === 'post' ? acc.balance : acc.balance * (1 - taxRate);
           case 'liquidation':
+            // IRS applies both income tax AND penalty to the gross pre-tax
+            // distribution independently (they stack on the full amount, not
+            // sequentially). So a $10k pre-tax balance at 22% tax + 10%
+            // penalty costs $2,200 in tax and $1,000 in penalty -> $6,800 net.
+            // Correct formula: balance * (1 - taxRate - penalty).
+            //
+            // Post-tax accounts (Roth) have no income tax on principal, so
+            // only the penalty applies to the gross amount.
+            //
+            // Note: the penalty field is user-entered. No automatic age-based
+            // waiver is applied here - users should enter 0 if they are
+            // past the applicable penalty age (typically 59.5 for most
+            // retirement accounts, 65 for HSA medical use).
             return acc.type === 'pre'
-              ? acc.balance * (1 - taxRate) * (1 - penalty)
+              ? acc.balance * (1 - taxRate - penalty)
               : acc.balance * (1 - penalty);
           default:
             return acc.balance;
@@ -4675,6 +4828,16 @@ If payFrequency cannot be determined, guess "biweekly".`,
         const annualSpend = this.retirementInputs.annualPostRetireSpend;
         const taxRate = this.retirementInputs.estimatedTaxRate / 100;
 
+        // Standard penalty-free age for most U.S. retirement accounts under IRS rules.
+        // 401(k), IRA, and similar accounts allow penalty-free withdrawals at 59.5.
+        // HSA withdrawals for non-medical use are penalty-free at 65, but since we
+        // model penalty as a user-entered per-account field (penaltyRate), the user
+        // can set it to 0 manually for accounts they know are past their penalty window.
+        // We use 59.5 as the automatic penalty cutoff age. At or above this age,
+        // the per-account penalty no longer applies even if the user left it filled in,
+        // because the IRS waiver kicks in regardless of what's in the UI field.
+        const IRS_PENALTY_FREE_AGE = 59.5;
+
         let accountsCopy = this.retirementAccounts.filter(a => !a.hidden).map(a => ({
           type: a.type,
           balance: a.balance,
@@ -4682,6 +4845,9 @@ If payFrequency cannot be determined, guess "biweekly".`,
           inflow: a.inflow,
           ratePre: a.ratePre,
           ratePost: a.ratePost,
+          // Carry penaltyRate so the withdrawal engine can scale gross draws correctly
+          // during the penalty years (retirement age < 59.5).
+          penaltyRate: (a.penaltyRate || 0) / 100,
         }));
 
         const normalize = (value, type) => {
@@ -4696,15 +4862,28 @@ If payFrequency cannot be determined, guess "biweekly".`,
 
         for (let age = startAge; age <= endAge; age++) {
           const isRetired = age >= targetRetireAge;
+          // Penalty applies when the person is retired but has not yet reached the
+          // IRS penalty-free age. Once they cross 59.5 the penalty stops, even if
+          // their account still has a penaltyRate set.
+          const isPenaltyAge = age < IRS_PENALTY_FREE_AGE;
 
           let rawYearValue = 0;
           let normalizedPrincipal = 0;
           let normalizedGains = 0;
+          let annualInterest = 0;
+          let annualContribution = 0;
+          let annualWithdrawal = isRetired ? annualSpend : 0;
+
           accountsCopy.forEach(acc => {
             rawYearValue += acc.balance;
             const gains = Math.max(0, acc.balance - acc.principal);
             normalizedPrincipal += normalize(acc.principal, acc.type);
             normalizedGains += normalize(gains, acc.type);
+            const rate = (isRetired ? acc.ratePost : acc.ratePre) / 100;
+            annualInterest += normalize(acc.balance * rate, acc.type);
+            if (!isRetired) {
+              annualContribution += normalize(acc.inflow, acc.type);
+            }
           });
 
           projections.push({
@@ -4712,6 +4891,11 @@ If payFrequency cannot be determined, guess "biweekly".`,
             principal: Math.max(0, normalizedPrincipal),
             gains: Math.max(0, normalizedGains),
             value: Math.max(0, normalizedPrincipal + normalizedGains),
+            annualInterest: Math.max(0, annualInterest),
+            annualContribution: Math.max(0, annualContribution),
+            annualWithdrawal: Math.max(0, normalize(annualWithdrawal, 'mix')),
+            isRetired,
+            isPenaltyAge: isRetired && isPenaltyAge,
           });
 
           accountsCopy.forEach(acc => {
@@ -4723,9 +4907,32 @@ If payFrequency cannot be determined, guess "biweekly".`,
               const rate = acc.ratePost / 100;
               if (rawYearValue > 0) {
                 const proportion = acc.balance / rawYearValue;
-                const withdrawal = annualSpend * proportion;
-                acc.balance = Math.max(0, acc.balance - withdrawal);
-                acc.principal = Math.max(0, acc.principal - withdrawal);
+                // Base share of the target spend allocated to this account
+                const targetWithdrawal = annualSpend * proportion;
+
+                // For pre-tax accounts during the penalty window, a larger gross
+                // withdrawal is required to net the same after-tax-and-penalty amount.
+                // IRS taxes and penalties both apply to the full gross distribution
+                // (they do not stack sequentially - each is levied on the gross amount).
+                // So to net $X from a pre-tax account: gross = X / (1 - taxRate - penalty).
+                // Post-tax accounts (Roth) have no income tax on principal; only the
+                // penalty applies to the gross amount: gross = X / (1 - penalty).
+                // We cap the combined rate at 0.99 to prevent division-by-zero.
+                let grossWithdrawal;
+                if (isRetired && isPenaltyAge && acc.penaltyRate > 0) {
+                  if (acc.type === 'pre') {
+                    const effectiveRate = Math.min(0.99, taxRate + acc.penaltyRate);
+                    grossWithdrawal = targetWithdrawal / (1 - effectiveRate);
+                  } else {
+                    const effectiveRate = Math.min(0.99, acc.penaltyRate);
+                    grossWithdrawal = targetWithdrawal / (1 - effectiveRate);
+                  }
+                } else {
+                  grossWithdrawal = targetWithdrawal;
+                }
+
+                acc.balance = Math.max(0, acc.balance - grossWithdrawal);
+                acc.principal = Math.max(0, acc.principal - grossWithdrawal);
               }
               acc.balance = acc.balance * (1 + rate);
             }
@@ -4747,6 +4954,8 @@ If payFrequency cannot be determined, guess "biweekly".`,
       getRetirementMilestones(startAge, endAge) {
         const targetRetireAge = this.retirementInputs.targetRetirementAge;
         const annualSpend = this.retirementInputs.annualPostRetireSpend;
+        const taxRate = this.retirementInputs.estimatedTaxRate / 100;
+        const IRS_PENALTY_FREE_AGE = 59.5;
         const activeAccounts = this.retirementAccounts.filter(a => !a.hidden);
         const totalAnnualContribution = activeAccounts.reduce((s, a) => s + (a.inflow || 0), 0);
 
@@ -4756,6 +4965,7 @@ If payFrequency cannot be determined, guess "biweekly".`,
           inflow: a.inflow,
           ratePre: a.ratePre,
           ratePost: a.ratePost,
+          penaltyRate: (a.penaltyRate || 0) / 100,
         }));
 
         let gainsExceedContributionAge = null;
@@ -4763,6 +4973,7 @@ If payFrequency cannot be determined, guess "biweekly".`,
 
         for (let age = startAge; age <= endAge; age++) {
           const isRetired = age >= targetRetireAge;
+          const isPenaltyAge = age < IRS_PENALTY_FREE_AGE;
           const rawYearValue = accountsCopy.reduce((s, a) => s + a.balance, 0);
 
           let annualGainsGenerated = 0;
@@ -4786,7 +4997,20 @@ If payFrequency cannot be determined, guess "biweekly".`,
               const rate = acc.ratePost / 100;
               if (rawYearValue > 0) {
                 const proportion = acc.balance / rawYearValue;
-                acc.balance = Math.max(0, acc.balance - annualSpend * proportion);
+                const targetWithdrawal = annualSpend * proportion;
+                let grossWithdrawal;
+                if (isPenaltyAge && acc.penaltyRate > 0) {
+                  if (acc.type === 'pre') {
+                    const effectiveRate = Math.min(0.99, taxRate + acc.penaltyRate);
+                    grossWithdrawal = targetWithdrawal / (1 - effectiveRate);
+                  } else {
+                    const effectiveRate = Math.min(0.99, acc.penaltyRate);
+                    grossWithdrawal = targetWithdrawal / (1 - effectiveRate);
+                  }
+                } else {
+                  grossWithdrawal = targetWithdrawal;
+                }
+                acc.balance = Math.max(0, acc.balance - grossWithdrawal);
               }
               acc.balance = acc.balance * (1 + rate);
             }
@@ -5065,7 +5289,38 @@ If payFrequency cannot be determined, guess "biweekly".`,
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-                  label: (item) => ` ${item.dataset.label}: ${this.formatCurrency(item.parsed.y)}`
+                  title: (tooltipItems) => {
+                    if (!tooltipItems.length) return '';
+                    const idx = tooltipItems[0].dataIndex;
+                    const p = projections[idx];
+                    if (!p) return `Age ${labels[idx]?.replace('Age ', '') || idx}`;
+                    return `Age ${p.age}${p.isRetired ? ' (Retired)' : ''}`;
+                  },
+                  label: (item) => ` ${item.dataset.label}: ${this.formatCurrency(item.parsed.y)}`,
+                  afterBody: (tooltipItems) => {
+                    if (!tooltipItems.length) return [];
+                    const idx = tooltipItems[0].dataIndex;
+                    const p = projections[idx];
+                    if (!p) return [];
+                    const lines = [''];
+                    if (!p.isRetired) {
+                      if (p.annualContribution > 0) {
+                        lines.push(` Contributions this year: ${this.formatCurrency(p.annualContribution)}`);
+                      }
+                      lines.push(` Interest earned this year: ${this.formatCurrency(p.annualInterest)}`);
+                    } else {
+                      lines.push(` Interest earned this year: ${this.formatCurrency(p.annualInterest)}`);
+                      if (p.annualWithdrawal > 0) {
+                        lines.push(` Annual withdrawal: ${this.formatCurrency(p.annualWithdrawal)}`);
+                      }
+                      if (p.isPenaltyAge) {
+                        lines.push(` * Early withdrawal penalties apply (before age 59.5)`);
+                        lines.push(`   Gross draws are scaled up to cover taxes + penalty`);
+                      }
+                    }
+                    lines.push(` Total portfolio: ${this.formatCurrency(p.value)}`);
+                    return lines;
+                  }
                 }
               },
               annotation: {
@@ -6122,7 +6377,7 @@ If payFrequency cannot be determined, guess "biweekly".`,
           }, { passive: true });
 
           document.addEventListener('touchend', (e) => {
-            const chartContainerEl = document.querySelector('.chart-container');
+            const chartContainerEl = document.querySelector('.chart-container, .sp-chart-container');
             if (chartContainerEl && !chartContainerEl.contains(e.target)) {
               if (this.timeScaleRefreshChart) {
                 this.timeScaleRefreshChart.tooltip.setActiveElements([], {});
